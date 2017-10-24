@@ -1,0 +1,3 @@
+- Put the current state of the folder entirely on git.
+- Put data on git in the style descripted in that talk /imported /input /src /output etc.
+- Don't save the models elsewhere. You can rerun the ones if you have the data and code. 

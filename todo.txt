@@ -1,0 +1,5 @@
+1) cleanup and deploy on git. Added dev env requirement info
+2) DEPLOY ON GIT GODDAMIT 
+3) Use keras-viz on gpu and create visualisations for a bunch of models/pics
+4) Finetune xception models futher?
+5) refactor for relative paths to data/models; add tests for it?

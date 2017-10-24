@@ -1,0 +1,54 @@
+import sys
+import os
+import numpy as np
+from keras.applications.inception_v3 import InceptionV3,preprocess_input,decode_predictions
+from keras.preprocessing import image as im
+from keras.models import Model,load_model
+from keras.layers import Dense, GlobalAveragePooling2D
+from keras import backend as K
+from keras.callbacks import ModelCheckpoint,EarlyStopping
+
+#command line args as follows:
+print("Uses all models ending with finetuned.h5 in an ensemble")
+print("Uses images_dir.txt as ground truth")
+print("Command line args: models_dir images_dir WITH / terminator")
+
+modelsDir = sys.argv[1]
+imgDir = sys.argv[2]
+
+
+groundTruth = {}
+
+decode=["daisy","dandelion","roses","sunflowers","tulips"]
+print(decode)
+
+with open(imgDir[:-1]+".txt") as f:
+    for line in f:
+       (key, val) = line.split()
+       groundTruth[key] = int(val)
+
+ensemble = [] 
+
+for modelFN in os.listdir(modelsDir):
+	if modelFN.endswith("finetuned.h5"):
+		ensemble.append(load_model(modelsDir+modelFN))
+
+for filename in os.listdir(imgDir):
+	if filename.endswith(".jpg") or filename.endswith(".png"):
+		img = im.load_img(imgDir+filename, target_size=(299,299))
+		x = im.img_to_array(img)
+		x = np.expand_dims(x, axis=0)
+		x = preprocess_input(x)
+		predictions = []
+		for model in ensemble:	
+			predictions.append(model.predict(x))
+		print('Predictions for "'+ filename + '" :' , predictions)
+		ensemblePred = np.average(predictions,axis=0)
+		print('Averaged prediction for "'+ filename + '" :' , ensemblePred)
+		actual = np.argmax(ensemblePred)
+		conf = np.amax(ensemblePred)
+		if groundTruth[filename] == actual :
+			print("CORRECT "  + str(decode[actual]) + " (conf=" + str(conf) + ") for "  + filename)
+		else:
+			print("WRONG NOT"  + str(decode[actual]) + " (ensPreds=" + str(ensemblePred) + ") for "  + filename)
+			
