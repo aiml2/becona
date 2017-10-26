@@ -54,11 +54,18 @@ for subdir, files in filespersubdir.items():
                 #print(files)
                 filespersubdir[subdir] = list(chunks(files,nbofchunks))
 
-
+#Given the arguments are relative paths from the same root directory
+# newdir pointing to an existing target directory
+# oldname to the source filename
+#Creates a relative symlink residing in newdir to oldname
 def mysymlink(newdir, oldname):
+        if newdir.endswith("/"):
+            newdir=newdir[-1]
         #Make relative symlink
         upcount = oldname.count('/')
                 #src , dest!!
+        print(newdir)
+        print(oldname)
         print(newdir+"/"+oldname.split('/')[-1] + "  --> " + "../"*upcount+oldname)
         os.symlink("../"*upcount+oldname,newdir+"/"+oldname.split('/')[-1])
 
