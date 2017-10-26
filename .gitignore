@@ -1,6 +1,8 @@
 #Project specific ignores:
 *.hdf5
 *.h5
+#OSX bullshit 
+*.DS_Store
 
 #Default PYTHON gitignore:
 ##########################
