@@ -59,6 +59,7 @@ def mysymlink(newdir, oldname):
         #Make relative symlink
         upcount = oldname.count('/')
                 #src , dest!!
+        print(newdir+"/"+oldname.split('/')[-1] + "  --> " + "../"*upcount+oldname)
         os.symlink("../"*upcount+oldname,newdir+"/"+oldname.split('/')[-1])
 
 
