@@ -1,3 +1,4 @@
+import time
 import sys
 import os
 import numpy as np
@@ -24,7 +25,6 @@ total = 0
 wrong = 0
 right = 0
 #X = []
-X = np.empty((0, 299, 299, 3))
 Y_true = []
 Y_pred = []
 class_names = class_indices.keys()
@@ -39,9 +39,13 @@ from keras.callbacks import ModelCheckpoint,EarlyStopping
 from sklearn.metrics import classification_report, confusion_matrix 
 
 model=load_model(modelArg)
+inputShape = model.input_shape
+#X = np.empty((0, 299, 299, 3))
+X = np.empty((0,) + inputShape[1:])
 
 #for filename in os.listdir(dirArg):
 	#if filename.endswith(".JPG") or filename.endswith(".jpg") or filename.endswith(".png"):
+starttime = time.time()
 for filename in groundTruth:
     img = im.load_img(dirArg+filename, target_size=(299,299))
     x = im.img_to_array(img)
@@ -55,13 +59,18 @@ for filename in groundTruth:
     Y_true.append(groundTruth[filename])
     names.append(filename)
     total +=1
+endtime = time.time()
+print('prep TIME difference = ', endtime-starttime)
 
 names = np.array(names)
 print(names)
 print("total is", str(total))
 # print(X.shape)
 # print(X[0])
+starttime = time.time()
 predictions = model.predict(np.array(X), batch_size=32)
+endtime = time.time()
+print('Prediction TIME difference = ', endtime-starttime)
 
 print(predictions)
 Y_pred = np.argmax(predictions, axis=1)
