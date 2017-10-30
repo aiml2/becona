@@ -6,7 +6,7 @@ from keras.layers import Dense, GlobalAveragePooling2D
 from keras import backend as K
 from keras.callbacks import ModelCheckpoint,EarlyStopping
 from keras.optimizers import SGD
-from code.AbstractFineTuneModelConfig import AbstractFineTuneModelConfig
+from AbstractFineTuneModelConfig import AbstractFineTuneModelConfig
 
 
 #First model for second batch
