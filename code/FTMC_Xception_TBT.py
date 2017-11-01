@@ -121,7 +121,9 @@ class FTMC_Xception_TBT(AbstractFineTuneModelConfig):
 # compile the model (should be done *after* setting layers to non-trainable)
         #CHANGE: use adam instead of SGD
         self.model.compile(optimizer='adam', loss='categorical_crossentropy')
-        tbcallback = TensorBoard(log_dir='/tmp/tblogs', histogram_freq=2, batch_size=32, write_graph=True, write_grads=True, write_images=False, embeddings_freq=2, embeddings_layer_names=['dense256','dropout'], embeddings_metadata=None)
+#TODO:for histograms don't use a validation generator...
+        tbcallback = TensorBoard(log_dir='/tmp/tblogs', histogram_freq=1, write_graph=True, write_images=False)
+        #tbcallback = TensorBoard(log_dir='/tmp/tblogs', histogram_freq=2, batch_size=32, write_graph=True, write_grads=True, write_images=False, embeddings_freq=2, embeddings_layer_names=['dense256','dropout'], embeddings_metadata=None)
 
         self.model.fit_generator(
                 trainGen,
@@ -129,6 +131,7 @@ class FTMC_Xception_TBT(AbstractFineTuneModelConfig):
                 epochs=nbOfEpochs,
                 validation_data=valGen,
                 validation_steps=self.validation_steps, #validation steps with generator
+                #callbacks=[checkpointer,self.early_stopping]) 
                 callbacks=[checkpointer,tbcallback,self.early_stopping]) 
 
         self.model.save(savename.format(epoch=nbOfEpochs))
