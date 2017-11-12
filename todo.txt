@@ -1,3 +1,10 @@
+0) Rerun some models with adam optimizer.
+Write script that does the following:
+	- Load empty model from filename.
+	- Restore weights from saved weights
+	- Restart with resume() function with new compile() parameters (like choice of optimizer; callbacks; ...)
+1) Write decent description of current progress in Ipython notebook for Sindi
+2)
 3) Use keras-vis on gpu and create visualisations for a bunch of models/pics
 4) Finetune xception models futher?
 5) refactor for relative paths to data/models; add tests for it?
