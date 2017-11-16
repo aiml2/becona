@@ -47,7 +47,8 @@ X = np.empty((0,) + inputShape[1:])
 	#if filename.endswith(".JPG") or filename.endswith(".jpg") or filename.endswith(".png"):
 starttime = time.time()
 for filename in groundTruth:
-    img = im.load_img(dirArg+filename, target_size=(299,299))
+    fullpath = os.path.join(dirArg,filename)
+    img = im.load_img(fullpath, target_size=(299,299))
     x = im.img_to_array(img)
     x = np.expand_dims(x, axis=0)
     x = preprocess_input(x)
@@ -57,7 +58,7 @@ for filename in groundTruth:
     #print(X.shape)
     #X.append(x)
     Y_true.append(groundTruth[filename])
-    names.append(filename)
+    names.append(fullpath)
     total +=1
 endtime = time.time()
 print('prep TIME difference = ', endtime-starttime)
@@ -88,10 +89,13 @@ print(IsFalse.shape)
 print(names[IsFalse])
 
 
+wrongsWithConf = np.asmatrix([names[IsFalse],Y_predConf[IsFalse]]).T
+print(wrongsWithConf)
 
-summary=np.array([Y_true, Y_pred, Y_predConf, IsTrue]) 
+
+
+summary=np.asmatrix([names, Y_true, Y_pred, Y_predConf, IsTrue]).T
 print(summary)
-print(np.transpose(summary))
 
 #     print('Predictions for "'+ filename + '" :' , prediction)
 #     actual = np.argmax(prediction)
@@ -120,5 +124,11 @@ print(np.transpose(summary))
 print("Total Correct: " + str(right) + "/" + str(total))
 print("Total Wrong: " + str(wrong) + "/" + str(total))
 #
-print(classification_report(Y_true, Y_pred, target_names=class_names))
-print(confusion_matrix(Y_pred,Y_true))
+classification_report = classification_report(Y_true, Y_pred, target_names=class_names)
+print(classification_report)
+confusion_matrix = confusion_matrix(Y_pred,Y_true)
+print(confusion_matrix)
+
+np.savez('mystore.npz', wrongsWithConf=wrongsWithConf, confusion_matrix=confusion_matrix, classification_report=classification_report)
+data = np.load('mystore.npz')
+print(data['wrongsWithConf'])
