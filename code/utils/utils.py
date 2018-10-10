@@ -14,6 +14,16 @@ def getGTFileName(directory):
     else:
         return directory+ext
 
+#Returns the groundTruth filename for a given directory
+# eg. /predictiondir -> /predictiondir.csv
+# eg. ../predictiondir/ -> ../predictiondir.csv
+def getCSVFileName(directory):
+    ext = ".csv"
+    if directory.endswith("/"):
+        return directory[:-1]+ext
+    else:
+        return directory+ext
+
 #Reads a ground truth file of a given directory
 # gt file should start with class_indices
 #Returns a dictonary with "filename -> groundTruth value"
@@ -107,6 +117,23 @@ def makeGroundTruth(directory):
     return len(class_indices)
 
 
+def makeAutoKerasCSV(directory):
+    class_indices=getClassIndices(directory)
+
+    if not len(class_indices) > 0: 
+        print("No classes found in directory " + directory)
+        return 0
+    print(class_indices)
+    with open(getCSVFileName(directory),"w") as f:
+        f.write("File Name,Label\n")
+        for className in class_indices:
+            print(className +"->" + str(class_indices[className]))
+            abspath = os.path.abspath(directory+className)
+            white_list_formats=getWhiteListFormats()
+            classes,filenames = _list_valid_filenames_in_directory(abspath, white_list_formats,class_indices,True)
+            for fn in filenames:
+                f.write(fn+","+str(class_indices[className])+"\n")
+    return len(class_indices)
 
 configIdClassDict = {"IV3" : "FTMC_InceptionV3", "Xc" : "FTMC_Xception" } 
 
@@ -130,6 +157,9 @@ def getConfigId(filename):
         raise Exception("Does not contain a valid configId")
     return match.group("basemodel") + "_" + match.group("version")
 
+def getSplitId(filename):
+#TODO
+    return False
 
 def classFromFilename(fn):
     return classFromConfigId(getConfigId(fn))
