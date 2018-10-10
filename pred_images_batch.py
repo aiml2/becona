@@ -89,12 +89,12 @@ print(IsFalse.shape)
 print(names[IsFalse])
 
 
-wrongsWithConf = np.asmatrix([names[IsFalse],Y_predConf[IsFalse]]).T
-print(wrongsWithConf)
+wrongsWithConfid = np.asmatrix([names[IsFalse],Y_predConf[IsFalse]]).T
+print(wrongsWithConfid)
 
 
 
-summary=np.asmatrix([names, Y_true, Y_pred, Y_predConf, IsTrue]).T
+summary=np.asmatrix([names, Y_true, IsTrue, Y_pred, Y_predConf]).T
 print(summary)
 
 #     print('Predictions for "'+ filename + '" :' , prediction)
@@ -129,6 +129,7 @@ print(classification_report)
 confusion_matrix = confusion_matrix(Y_pred,Y_true)
 print(confusion_matrix)
 
-np.savez('mystore.npz', wrongsWithConf=wrongsWithConf, confusion_matrix=confusion_matrix, classification_report=classification_report)
-data = np.load('mystore.npz')
-print(data['wrongsWithConf'])
+np.savez('lastresults.npz', modelArg=modelArg, dirArg=dirArg, summary=summary, wrongsWithConfid=wrongsWithConfid, confusion_matrix=confusion_matrix, classification_report=classification_report)
+data = np.load('lastresults.npz')
+print(data['modelArg'])
+print(data['wrongsWithConfid'])
