@@ -13,55 +13,69 @@ print("Will try to create a groundTruth (.gt) file if possible")
 modelArg = sys.argv[1]
 dirArg = sys.argv[2]
 
-if not os.path.isfile(utils.getGTFileName(dirArg)):
-    nbofClasses = utils.makeGroundTruth(dirArg)
 
-groundTruth,class_indices= utils.getGroundTruth(dirArg)
-decode = dict (zip(class_indices.values(),class_indices.keys()))
-print(class_indices)
+def prepGroundTruth(dirArg):
+    if not os.path.isfile(utils.getGTFileName(dirArg)):
+        nbofClasses = utils.makeGroundTruth(dirArg)
+    groundTruth,class_indices= utils.getGroundTruth(dirArg)
+    print(class_indices)
+    return class_indices,groundTruth
+    
+
+class_indices,groundTruth = prepGroundTruth(dirArg)
+class_names = class_indices.keys()
 nbOfClasses = len(class_indices) 
 print("Nb of classes in groundTruth file:", nbOfClasses)
-total = 0 
-wrong = 0
-right = 0
+decode = dict (zip(class_indices.values(),class_indices.keys()))
+# total = 0 
+# wrong = 0
+# right = 0
 #X = []
-Y_true = []
 Y_pred = []
-class_names = class_indices.keys()
-names = []
+
+from keras.preprocessing import image as im
+
+def prepImages(dirArg,groundTruth,inputShape):
+    names = []
+    total = 0
+    Y_true = []
+    X = np.empty((0,) + inputShape)
+    starttime = time.time()
+    for filename in groundTruth:
+        fullpath = os.path.join(dirArg,filename)
+        img = im.load_img(fullpath, target_size=(299,299))
+        x = im.img_to_array(img)
+        x = np.expand_dims(x, axis=0)
+        x = preprocess_input(x)
+        # if total == 0:
+        #     print(x)
+        X = np.append(X, x, axis=0)
+        #print(X.shape)
+        #X.append(x)
+        Y_true.append(groundTruth[filename])
+        names.append(fullpath)
+        total +=1
+    endtime = time.time()
+    print('prep TIME difference = ', endtime-starttime)
+    return X,Y_true,total,names
 
 from keras.applications.inception_v3 import InceptionV3,preprocess_input,decode_predictions
-from keras.preprocessing import image as im
 from keras.models import Model,load_model
 from keras.layers import Dense, GlobalAveragePooling2D
 from keras import backend as K
 from keras.callbacks import ModelCheckpoint,EarlyStopping
 from sklearn.metrics import classification_report, confusion_matrix 
 
+# model=load_model(modelArg)
+# inputShape = model.input_shape # == (None, 299, 299, 3)
+#X = np.empty((0, 299, 299, 3))
+#Hardcoded input shape to prep first before loading model
+X,Y_true,total,names = prepImages(dirArg,groundTruth,(299,299,3))
+
 model=load_model(modelArg)
 inputShape = model.input_shape
-#X = np.empty((0, 299, 299, 3))
-X = np.empty((0,) + inputShape[1:])
-
 #for filename in os.listdir(dirArg):
 	#if filename.endswith(".JPG") or filename.endswith(".jpg") or filename.endswith(".png"):
-starttime = time.time()
-for filename in groundTruth:
-    fullpath = os.path.join(dirArg,filename)
-    img = im.load_img(fullpath, target_size=(299,299))
-    x = im.img_to_array(img)
-    x = np.expand_dims(x, axis=0)
-    x = preprocess_input(x)
-    # if total == 0:
-    #     print(x)
-    X = np.append(X, x, axis=0)
-    #print(X.shape)
-    #X.append(x)
-    Y_true.append(groundTruth[filename])
-    names.append(fullpath)
-    total +=1
-endtime = time.time()
-print('prep TIME difference = ', endtime-starttime)
 
 names = np.array(names)
 print(names)
