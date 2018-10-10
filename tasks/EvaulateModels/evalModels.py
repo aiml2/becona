@@ -138,7 +138,7 @@ for split in range(5):
         summary=np.asmatrix([names, Y_true, IsTrue, Y_pred, Y_predConf]).T
         perctcorrect = right/total 
         perctwrong = wrong/total
-        classification_report = classification_report(Y_true, Y_pred, target_names=class_names)
-        confusion_matrix = confusion_matrix(Y_pred,Y_true)
-        np.savez(outputdir+"_results_"+modelFile+'.npz', modelFile=modelFile, perctcorrect=perctcorrect, perctwrong=perctwrong, dirArg=dirArg, summary=summary, wrongsWithConfid=wrongsWithConfid, confusion_matrix=confusion_matrix, classification_report=classification_report,predtime=predtime)
+        classificationReport = classification_report(Y_true, Y_pred, target_names=class_names)
+        confusionMatrix = confusion_matrix(Y_pred,Y_true)
+        np.savez(outputdir+"_results_"+modelFile+'.npz', modelFile=modelFile, perctcorrect=perctcorrect, perctwrong=perctwrong, dirArg=dirArg, summary=summary, wrongsWithConfid=wrongsWithConfid, confusionMatrix=confusionMatrix, classificationReport=classificationReport,predtime=predtime)
         #Load with data = np.load('filename.npz')
