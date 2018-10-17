@@ -140,5 +140,6 @@ for split in range(5):
         perctwrong = wrong/total
         classificationReport = classification_report(Y_true, Y_pred, target_names=class_names)
         confusionMatrix = confusion_matrix(Y_pred,Y_true)
+#TODO add all predictions to saved file
         np.savez(outputdir+"_results_"+modelFile+'.npz', modelFile=modelFile, perctcorrect=perctcorrect, perctwrong=perctwrong, dirArg=dirArg, summary=summary, wrongsWithConfid=wrongsWithConfid, confusionMatrix=confusionMatrix, classificationReport=classificationReport,predtime=predtime)
         #Load with data = np.load('filename.npz')
