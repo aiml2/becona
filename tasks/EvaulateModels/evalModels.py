@@ -2,6 +2,7 @@ import time
 import sys
 import os
 import numpy as np
+import re 
 sys.path.append("../../code/utils")
 import utils
 
@@ -22,7 +23,7 @@ def filterModels(modelsDir,cvindices=range(5)):
     seperator="_"
     modprefix="-m"
     configIdBase=["IV3","Xc"]
-    configIds = [3,4]
+    configIds = [3,4,5,6]
     configIdVersion=[seperator+"v"+str(n) for n in configIds]
     eraindices=range(2)
     #cvindices=range(5)
@@ -40,24 +41,33 @@ def filterModels(modelsDir,cvindices=range(5)):
 #    print(allMatched)
     allMatched.sort()
 #    print(len(allMatched))
+    epre = re.compile(r'''.*ep(\d+).*''')
+    vlre = re.compile(r'''.*vl(\d+)\.(\d+).*''')
 
     allFiltered = [] 
     for mod in configIdBase:
         for ver in configIdVersion:
             for cv in cvs:
                 for era in eras:
-                    minEra0Val = None
                     for fn in allMatched:
                         if fn.startswith(modprefix+mod+ver+cv+era):
-                            if era == "_Era0":
-                                    minEra0Val = fn
-                            else:
-                                print(fn)
-                                allFiltered.append(start+fn+end)
-                    if not (minEra0Val == None):
-                        allFiltered.append(start+minEra0Val+end)
+                            print(fn)
+                            ep = epre.match(fn).group(1)
+                            print(ep)
+                            vlmatch0 = vlre.match(fn).group(1)
+                            vlmatch1 = vlre.match(fn).group(2)
+                            print(vlmatch0)
+                            print(vlmatch1)
+                            allFiltered.append({'filename':start+fn+end,
+                                'confid':mod+ver,
+                                'split':int(cv[6:]),
+                                'era':int(era[4:]),
+                                'ep':int(ep),
+                                'valloss':float(vlmatch0+'.'+vlmatch1)})
     return allFiltered
 #command line args as follows:
+
+
 
 
 
@@ -70,7 +80,7 @@ def prepGroundTruth(dirArg):
     
 
 
-from keras.preprocessing import image as im
+#from keras.preprocessing import image as im
 
 def prepImages(dirArg,groundTruth,inputShape):
     names = []
@@ -96,50 +106,52 @@ def prepImages(dirArg,groundTruth,inputShape):
     print('prep TIME difference = ', endtime-starttime)
     return X,Y_true,total,names
 
-#print(filterModels(modelsDir,[3]))
+print(filterModels(modelsDir))
+print(len(filterModels(modelsDir)))
 
-from keras.applications.inception_v3 import InceptionV3,preprocess_input,decode_predictions
-from keras.models import Model,load_model
-from keras.layers import Dense, GlobalAveragePooling2D
-from keras import backend as K
-from keras.callbacks import ModelCheckpoint,EarlyStopping
-from sklearn.metrics import classification_report, confusion_matrix 
 
-#Hardcoded input shape to prep first before loading models
-
-for split in range(5):
-    prefix = "../../B2split_" 
-    suffix = "_Val"
-    dirArg = prefix+str(split)+suffix
-    print("prediction dir ="+ dirArg)
-    class_indices,groundTruth = prepGroundTruth(dirArg)
-    class_names = class_indices.keys()
-    nbOfClasses = len(class_indices) 
-    print("Nb of classes in groundTruth file:", nbOfClasses)
-    X,Y_true,total,names = prepImages(dirArg,groundTruth,(299,299,3))
-    names = np.array(names)
-    Y_pred = []
-    splitModels = filterModels(modelsDir,[split])
-    print(splitModels)
-    for modelFile in splitModels:
-        model=load_model(modelsDir+modelFile)
-        inputShape = model.input_shape
-        starttime = time.time()
-        predictions = model.predict(np.array(X), batch_size=32)
-        endtime = time.time()
-        predtime = endtime-starttime
-        Y_pred = np.argmax(predictions, axis=1)
-        Y_predConf = np.amax(predictions, axis=1)
-        IsTrue = np.equal(Y_pred, Y_true)
-        IsFalse = np.logical_not(IsTrue)
-        right=np.sum(IsTrue)
-        wrong=np.sum(IsFalse)
-        wrongsWithConfid = np.asmatrix([names[IsFalse],Y_predConf[IsFalse]]).T
-        summary=np.asmatrix([names, Y_true, IsTrue, Y_pred, Y_predConf]).T
-        perctcorrect = right/total 
-        perctwrong = wrong/total
-        classificationReport = classification_report(Y_true, Y_pred, target_names=class_names)
-        confusionMatrix = confusion_matrix(Y_pred,Y_true)
-#TODO add all predictions to saved file
-        np.savez(outputdir+"_results_"+modelFile+'.npz', modelFile=modelFile, perctcorrect=perctcorrect, perctwrong=perctwrong, dirArg=dirArg, summary=summary, wrongsWithConfid=wrongsWithConfid, confusionMatrix=confusionMatrix, classificationReport=classificationReport,predtime=predtime)
-        #Load with data = np.load('filename.npz')
+#from keras.applications.inception_v3 import InceptionV3,preprocess_input,decode_predictions
+#from keras.models import Model,load_model
+#from keras.layers import Dense, GlobalAveragePooling2D
+#from keras import backend as K
+#from keras.callbacks import ModelCheckpoint,EarlyStopping
+#from sklearn.metrics import classification_report, confusion_matrix 
+#
+##Hardcoded input shape to prep first before loading models
+#
+#for split in range(5):
+#    prefix = "../../B2split_" 
+#    suffix = "_Val"
+#    dirArg = prefix+str(split)+suffix
+#    print("prediction dir ="+ dirArg)
+#    class_indices,groundTruth = prepGroundTruth(dirArg)
+#    class_names = class_indices.keys()
+#    nbOfClasses = len(class_indices) 
+#    print("Nb of classes in groundTruth file:", nbOfClasses)
+#    X,Y_true,total,names = prepImages(dirArg,groundTruth,(299,299,3))
+#    names = np.array(names)
+#    Y_pred = []
+#    splitModels = filterModels(modelsDir,[split])
+#    print(splitModels)
+#    for modelFile in splitModels:
+#        model=load_model(modelsDir+modelFile)
+#        inputShape = model.input_shape
+#        starttime = time.time()
+#        predictions = model.predict(np.array(X), batch_size=32)
+#        endtime = time.time()
+#        predtime = endtime-starttime
+#        Y_pred = np.argmax(predictions, axis=1)
+#        Y_predConf = np.amax(predictions, axis=1)
+#        IsTrue = np.equal(Y_pred, Y_true)
+#        IsFalse = np.logical_not(IsTrue)
+#        right=np.sum(IsTrue)
+#        wrong=np.sum(IsFalse)
+#        wrongsWithConfid = np.asmatrix([names[IsFalse],Y_predConf[IsFalse]]).T
+#        summary=np.asmatrix([names, Y_true, IsTrue, Y_pred, Y_predConf]).T
+#        perctcorrect = right/total 
+#        perctwrong = wrong/total
+#        classificationReport = classification_report(Y_true, Y_pred, target_names=class_names)
+#        confusionMatrix = confusion_matrix(Y_pred,Y_true)
+##TODO add all predictions to saved file
+#        np.savez(outputdir+"_results_"+modelFile+'.npz', modelFile=modelFile, perctcorrect=perctcorrect, perctwrong=perctwrong, dirArg=dirArg, summary=summary, wrongsWithConfid=wrongsWithConfid, confusionMatrix=confusionMatrix, classificationReport=classificationReport,predtime=predtime)
+#        #Load with data = np.load('filename.npz')
