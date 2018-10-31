@@ -45,9 +45,16 @@ def filterModels(modelsDir,cvindices=range(5)):
     vlre = re.compile(r'''.*vl(\d+)\.(\d+).*''')
 
     allFiltered = [] 
+    bestModConfNameAvg = ''
+    bestModConfAvg = 1;
+    bestModConfNameMean = ''
+    bestModConfMean = 1;
+    allbests = []
     for mod in configIdBase:
         for ver in configIdVersion:
+            bestpercvs = []
             for cv in cvs:
+                best_in_cv = 1 
                 for era in eras:
                     for fn in allMatched:
                         if fn.startswith(modprefix+mod+ver+cv+era):
@@ -56,6 +63,9 @@ def filterModels(modelsDir,cvindices=range(5)):
                             print(ep)
                             vlmatch0 = vlre.match(fn).group(1)
                             vlmatch1 = vlre.match(fn).group(2)
+                            vl = float(vlmatch0+'.'+vlmatch1)
+                            if(vl<best_in_cv):
+                                best_in_cv = vl
                             print(vlmatch0)
                             print(vlmatch1)
                             allFiltered.append({'filename':start+fn+end,
@@ -63,7 +73,27 @@ def filterModels(modelsDir,cvindices=range(5)):
                                 'split':int(cv[6:]),
                                 'era':int(era[4:]),
                                 'ep':int(ep),
-                                'valloss':float(vlmatch0+'.'+vlmatch1)})
+                                'valloss':vl})
+                print(cv + ' -- best vl ==' + str(best_in_cv))
+                bestpercvs.append(best_in_cv)
+            print(bestpercvs)
+            avg = np.average(bestpercvs)
+            mean = np.mean(bestpercvs)
+            print('###########################' +mod+ver+ ' average ==' + str(avg))
+            print('###########################' +mod+ver+ ' mean ==' + str(mean))
+            if(avg<bestModConfMean):
+                bestModConfMean = mean 
+                bestModConfNameMean = mod+ver
+            if(avg<bestModConfAvg):
+                bestModConfAvg = avg
+                bestModConfNameAvg = mod+ver
+            if not(bestpercvs == [1,1,1,1,1]):
+                print('tmp')
+                allbests.append(bestpercvs)
+    print(bestModConfNameAvg + 'wins with' + str(bestModConfAvg) + ' validation loss!!')
+    print(bestModConfNameMean + 'wins with' + str(bestModConfMean) + ' validation loss!!')
+    print(allbests)
+    print(np.array(allbests))
     return allFiltered
 #command line args as follows:
 
@@ -106,8 +136,7 @@ def prepImages(dirArg,groundTruth,inputShape):
     print('prep TIME difference = ', endtime-starttime)
     return X,Y_true,total,names
 
-print(filterModels(modelsDir))
-print(len(filterModels(modelsDir)))
+filterModels(modelsDir)
 
 
 #from keras.applications.inception_v3 import InceptionV3,preprocess_input,decode_predictions
