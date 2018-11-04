@@ -13,6 +13,14 @@ print("Will try to create a groundTruth (.gt) file if possible")
 modelArg = sys.argv[1]
 dirArg = sys.argv[2]
 
+def sizeof_fmt(num, suffix='B'):
+    for unit in ['','Ki','Mi','Gi','Ti','Pi','Ei','Zi']:
+        if abs(num) < 1024.0:
+            return "%3.1f%s%s" % (num, unit, suffix)
+        num /= 1024.0
+    return "%.1f%s%s" % (num, 'Yi', suffix)
+
+
 
 def prepGroundTruth(dirArg):
     if not os.path.isfile(utils.getGTFileName(dirArg)):
@@ -102,8 +110,8 @@ print("names shape", str(names.shape))
 print(IsFalse.shape)
 print(names[IsFalse])
 
-
-wrongsWithConfid = np.asmatrix([names[IsFalse],Y_predConf[IsFalse]]).T
+sizes = lambda x : sizeof_fmt(os.stat(x).st_size)
+wrongsWithConfid = np.asmatrix([names[IsFalse],Y_predConf[IsFalse],list(map(sizes,names[IsFalse]))]).T
 print(wrongsWithConfid)
 
 
