@@ -8,3 +8,16 @@ Write script that does the following:
 3) Use keras-vis on gpu and create visualisations for a bunch of models/pics
 4) Finetune xception models futher?
 5) refactor for relative paths to data/models; add tests for it?
+
+
+
+-----------------PRESENTATION TODO--------------
+-Analyze failure cases of 90%+ models
++Check wether pred testing folder can act like an independent test-set. [YES, for BECONA1.0 but not for 345]
+
+
+
+-----------------ORGANISARTION TODO-------------
+-Clean out your repository. 
+--Remove unused files (they're still on git mate!)
+--Organize code,scripts,tests,data,notes,presentation,...

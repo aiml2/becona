@@ -5,6 +5,7 @@ import numpy as np
 import re 
 sys.path.append("../../code/utils")
 import utils
+import matplotlib.pyplot as plt
 
 #Steps for evaluating:
 
@@ -93,7 +94,12 @@ def filterModels(modelsDir,cvindices=range(5)):
     print(bestModConfNameAvg + 'wins with' + str(bestModConfAvg) + ' validation loss!!')
     print(bestModConfNameMean + 'wins with' + str(bestModConfMean) + ' validation loss!!')
     print(allbests)
-    print(np.array(allbests))
+    datatoboxplot = np.transpose(np.array(allbests))
+    print(datatoboxplot)
+    fig1, ax1 = plt.subplots()
+    ax1.set_title('Basic Plot')
+    ax1.boxplot(datatoboxplot)
+    plt.show()
     return allFiltered
 #command line args as follows:
 
