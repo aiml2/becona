@@ -1,3 +1,9 @@
+#!/bin/python3
+#TODO: write tests for filteModels
+#TODO: refactor filtermodels into utils package
+#TODO: refactor so only relevant evaluation code is here
+#TODO: split model filtering to seperate task creating symlinks
+#TODO: add labels to pyplotlib 
 import time
 import sys
 import os
@@ -6,6 +12,7 @@ import re
 sys.path.append("../../code/utils")
 import utils
 import matplotlib.pyplot as plt
+import os
 
 #Steps for evaluating:
 
@@ -15,24 +22,23 @@ import matplotlib.pyplot as plt
     # 1.3.0) For each of the models:
     # 1.3.1)  Batch predict the validation set of the CV split
     # 1.3.2)  Write file with the results: conf matrix, stat measures and which images are wrong/right 
-import os
 
 modelsDir = 'input/'
 outputdir = 'output/'
 
-def filterModels(modelsDir,cvindices=range(5)):
+def filterModels(modelsDir,
+        configIdBase=["IV3","Xc"],
+        configIds = [3,4,5,6,7,71],
+        eraindices=range(2),
+        cvindices=range(5)):
     seperator="_"
+    start="BECONA2.0"
     modprefix="-m"
-    configIdBase=["IV3","Xc"]
-    configIds = [3,4,5,6,7]
     configIdVersion=[seperator+"v"+str(n) for n in configIds]
-    eraindices=range(2)
     #cvindices=range(5)
     eras=[seperator+"Era"+str(n) for n in eraindices]
     cvs=[seperator+"split"+str(n) for n in cvindices]
     end=".hdf5"
-    start="BECONA2.0"
-    val_seperator='-'
 
     allMatched=[]
     for modelFN in os.listdir(modelsDir):
@@ -51,67 +57,75 @@ def filterModels(modelsDir,cvindices=range(5)):
     bestModConfNameMean = ''
     bestModConfMean = 1;
     allbests = []
+    filteredLegend = []
     for mod in configIdBase:
         for ver in configIdVersion:
-            bestpercvs = []
+            currModel = mod+ver
+            print(currModel)
+            filterMatch = False 
+            bestOfEachCVsplit = []
             for cv in cvs:
                 best_in_cv = 1 
                 for era in eras:
                     for fn in allMatched:
-                        if fn.startswith(modprefix+mod+ver+cv+era):
+                        if fn.startswith(modprefix+currModel+cv+era):
+                            filterMatch = True 
                             print(fn)
                             ep = epre.match(fn).group(1)
-                            print(ep)
+                            #print(ep)
                             vlmatch0 = vlre.match(fn).group(1)
                             vlmatch1 = vlre.match(fn).group(2)
                             vl = float(vlmatch0+'.'+vlmatch1)
                             if(vl<best_in_cv):
                                 best_in_cv = vl
-                            print(vlmatch0)
-                            print(vlmatch1)
+                            #print(vlmatch0)
+                            #print(vlmatch1)
                             allFiltered.append({'filename':start+fn+end,
-                                'confid':mod+ver,
+                                'confid':currModel,
                                 'split':int(cv[6:]),
                                 'era':int(era[4:]),
                                 'ep':int(ep),
                                 'valloss':vl})
                 print(cv + ' -- best vl ==' + str(best_in_cv))
-                bestpercvs.append(best_in_cv)
-            print(bestpercvs)
-            avg = np.average(bestpercvs)
-            mean = np.mean(bestpercvs)
-            print('###########################' +mod+ver+ ' average ==' + str(avg))
-            print('###########################' +mod+ver+ ' mean ==' + str(mean))
-            if(avg<bestModConfMean):
-                bestModConfMean = mean 
-                bestModConfNameMean = mod+ver
-            if(avg<bestModConfAvg):
-                bestModConfAvg = avg
-                bestModConfNameAvg = mod+ver
-            if not(bestpercvs == [1,1,1,1,1]):
-                print('tmp')
-                allbests.append(bestpercvs)
+                bestOfEachCVsplit.append(best_in_cv)
+            if filterMatch:
+                print(bestOfEachCVsplit)
+                avg = np.average(bestOfEachCVsplit)
+                mean = np.mean(bestOfEachCVsplit)
+                #print('###########################' +currModel+ ' average ==' + str(avg))
+                #print('###########################' +currModel+ ' mean ==' + str(mean))
+                if(avg<bestModConfMean):
+                    bestModConfMean = mean 
+                    bestModConfNameMean = currModel
+                if(avg<bestModConfAvg):
+                    bestModConfAvg = avg
+                    bestModConfNameAvg = currModel
+                filteredLegend.append(currModel)
+                allbests.append(bestOfEachCVsplit)
+            else:
+                print('NONEFORTHISVER'+currModel)
+                if not(bestOfEachCVsplit == [1,1,1,1,1]):
+                    print('==============================ASSERTION ERROR==============================')
     print(bestModConfNameAvg + 'wins with' + str(bestModConfAvg) + ' validation loss!!')
     print(bestModConfNameMean + 'wins with' + str(bestModConfMean) + ' validation loss!!')
+    print(filteredLegend)
     print(allbests)
     datatoboxplot = np.transpose(np.array(allbests))
     print(datatoboxplot)
+    #print(allFiltered)
     fig1, ax1 = plt.subplots()
-    ax1.set_title('Basic Plot')
+    ax1.set_title('Boxplots of best model version over the 5-fold Cross-validation splits')
     ax1.boxplot(datatoboxplot)
+    ax1.set_xticklabels(filteredLegend, rotation=45, fontsize=8)
     plt.show()
     return allFiltered
 #command line args as follows:
-
-
-
-
 
 def prepGroundTruth(dirArg):
     if not os.path.isfile(utils.getGTFileName(dirArg)):
         nbofClasses = utils.makeGroundTruth(dirArg)
     groundTruth,class_indices= utils.getGroundTruth(dirArg)
-    print(class_indices)
+    #print(class_indices)
     return class_indices,groundTruth
     
 
@@ -139,10 +153,11 @@ def prepImages(dirArg,groundTruth,inputShape):
         names.append(fullpath)
         total +=1
     endtime = time.time()
-    print('prep TIME difference = ', endtime-starttime)
+    #print('prep TIME difference = ', endtime-starttime)
     return X,Y_true,total,names
 
 filterModels(modelsDir)
+#filterModels(modelsDir,configIds=[71])
 
 
 #from keras.applications.inception_v3 import InceptionV3,preprocess_input,decode_predictions
