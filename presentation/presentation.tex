@@ -2,6 +2,8 @@
 
 \usepackage[utf8]{inputenc}
 \usepackage{default}
+\usepackage{amsmath}
+\usepackage{tikz}
 
 \usetheme{CambridgeUS}
 
@@ -37,29 +39,80 @@
 \begin{frame}{Items}
   \begin{itemize}
 	    \item About 30 items exist.
-	    \item I focused on a subset of 6: 
-	    \begin{itemize}
-	      \item Spanklem (1)
-	      \item VleugelmoerOplegRecht Oud rond twee gaten (2.0)
-	      \item VleugelMoerOplegRecht Nieuw geen gaten (2.1)
-	      \item VleugelMoerOpleg Rond (3)
-	      \item Variable Spanklem Kort (4.0)
-	      \item Variable Spanklem Lang (4.1)
-	    \end{itemize}
-	    \item Of which 2 and 4 have very high visual similarity
+	    \item I focused on a subset of 6: \\
+	    \begin{tabular}{ccc}
+	      Id & Name & \# samples \\ \hline
+	      1 & Spanklem & 223 \\
+	      2.0 & Vleugelmoer Opleg Recht - Oud rond twee gaten & 208 \\
+	      2.1 & Vleugelmoer Opleg Recht - Nieuw geen gaten  & 244 \\
+	      3 & Vleugelmoer Opleg Rond & 238 \\
+	      4.0 & Variable Spanklem - Kort & 270 \\
+	      4.1 & Variable Spanklem - Lang & 251  \\
+	    \end{tabular}
+	    \item Of which 2.x and 4.x have very high visual similarity
   \end{itemize}
 \end{frame}
 
 \section{Approach}
+
+\begin{frame}
+\begin{itemize}
+ \item Training a Neural Network from scratch needs millions of samples 
+ \item In two afternoons I took merely 1434 pictures
+ \item \textbf{solution}: stand on the shoulder of giants $\rightarrow$ \textbf{transfer learning}
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Neural Network structure (simplified)}
+\begin{figure}
+\def\layersep{2.5cm}
+
+\begin{tikzpicture}[shorten >=1pt,->,draw=black!50, node distance=\layersep]
+    \tikzstyle{every pin edge}=[-,shorten <=1pt]
+    \tikzstyle{neuron}=[circle,fill=black!25,minimum size=17pt,inner sep=0pt]
+    \tikzstyle{input neuron}=[neuron];
+    \tikzstyle{output neuron}=[neuron];
+    \tikzstyle{hidden neuron}=[neuron];
+    \tikzstyle{annot} = [text width=4em, text centered]
+
+    % Draw the input layer nodes
+    \foreach \id / \x / \y / \rgb / \color in {1/0/0/R/red!50,2/0/0/G/green!30,3/0/0/B/blue!80,4/1/0/R/red}
+	\node[input neuron, fill=\color, pin=left:{\rgb-Pixel (\x,\y)}] (I-\id) at (0,-\id) {};
+
+    % Draw the hidden layer nodes
+    \foreach \name / \y in {1,...,5}
+        \path[yshift=0.5cm]
+            node[hidden neuron] (H-\name) at (\layersep,-\y cm) {};
+
+    \foreach \y / \name in {1/1,2/2.0,3/2.1,4/3,5/4.0,6/4.1}
+        \path[yshift=0.5cm]
+            node[output neuron, pin=right:{$P(\name)$}] (O-\y) at (2*\layersep,-\y cm) {};
+
+    % Connect every node in the input layer with every node in the
+    % hidden layer.
+    \foreach \source in {1,...,4}
+        \foreach \dest in {1,...,5}
+            \path (I-\source) edge (H-\dest);
+
+    % Connect every node in the hidden layer with every node in the
+    % output layer.
+    \foreach \source in {1,...,5}
+        \foreach \dest in {1,...,6}
+            \path (H-\source) edge (O-\dest);
+
+    % Annotate the layers
+    \node[annot,above of=H-1, node distance=1cm] (hl) {Hidden layers};
+    \node[annot,left of=hl] {Input layer}; % 299x299 RGB image
+    \node[annot,right of=hl] {Output layer};
+    \node[annot,below of=I-2] {$\vdots$};
+    \node[annot,below left of=I-3] {$\vdots$};
+\end{tikzpicture} 
+\end{figure}
+\end{frame}
+
 \section{Results}
 \section{Suggestions}
 \section{Q\&A}
-
-
-\begin{frame}
-\end{frame}
-
-
 \begin{frame}
   \begin{itemize}
 	    \item How does the system compare to human classification?
