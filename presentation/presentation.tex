@@ -3,7 +3,11 @@
 \usepackage[utf8]{inputenc}
 \usepackage{default}
 
-\title{Machine Learning at Becona}
+\usetheme{CambridgeUS}
+
+\title{Machine Learning @ Becona}
+\subtitle{Proof of Concept Image Classification for Concrete Casting Equipment}
+
 \author{Dieter Castel}
 \date{\today}
 
@@ -13,34 +17,56 @@
   \titlepage
 \end{frame}
 
-\section{problem}
-\section{status update}
+\begin{frame}{overview}
+\tableofcontents
+\end{frame}
+
+\section{Problem}
+\begin{frame}{Problem Definition}
+  \begin{itemize}
+	    \item Automated Sorting of Concrete Casting Equipment 
+	    \begin{itemize}
+	      \item Exploratory Proof of Concept 
+	      \item Focused on Object Recognition Software System
+	      \item Educational project for myself 
+	    \end{itemize}
+	    \item \textbf{Are Convolutional Neural Networks a valid approach for recognizing the Becona rental items?}
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Items}
+  \begin{itemize}
+	    \item About 30 items exist.
+	    \item I focused on a subset of 6: 
+	    \begin{itemize}
+	      \item Spanklem (1)
+	      \item VleugelmoerOplegRecht Oud rond twee gaten (2.0)
+	      \item VleugelMoerOplegRecht Nieuw geen gaten (2.1)
+	      \item VleugelMoerOpleg Rond (3)
+	      \item Variable Spanklem Kort (4.0)
+	      \item Variable Spanklem Lang (4.1)
+	    \end{itemize}
+	    \item Of which 2 and 4 have very high visual similarity
+  \end{itemize}
+\end{frame}
+
+\section{Approach}
+\section{Results}
+\section{Suggestions}
+\section{Q\&A}
+
 
 \begin{frame}
-  \begin{itemize}
-	    \item 1
-            \item 2
-  \end{itemize}
-
 \end{frame}
 
 
-\begin{frame}
-  \begin{itemize}
-	    \item 1
-            \item 2
-  \end{itemize}
-
-\end{frame}
-\section{future advice}
 \begin{frame}
   \begin{itemize}
 	    \item How does the system compare to human classification?
-	    \item Speed, cost, effort, \bold{acurracy}, FP vs FN/
+	    \item Speed, cost, effort, \emph{accuracy}, FP vs FN
+	    \item TEST
   \end{itemize}
-
 \end{frame}
-\section{Q&A}
 
 
 \end{document}
