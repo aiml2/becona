@@ -21,3 +21,9 @@ Write script that does the following:
 -Clean out your repository. 
 --Remove unused files (they're still on git mate!)
 --Organize code,scripts,tests,data,notes,presentation,...
+
+
+
+-----------------CODE TODO------------
+- Create an CNN object detection transfer learning hyper param tuner library for Keras.
+- Generate GAN images for each class to be used as augmentation.
