@@ -4,6 +4,135 @@
 \usepackage{default}
 \usepackage{amsmath}
 \usepackage{tikz}
+%\usepackage{chronology}
+\usepackage{chronosys}
+\usepackage{graphicx}
+\usepackage{subfig}
+\graphicspath{ {./figures/} }
+
+%%%%FROM
+%%%%  https://tex.stackexchange.com/questions/312704/chronosys-not-using-only-years
+\usepackage{datenumber,xparse}
+\usetikzlibrary{arrows.meta,backgrounds}
+\newcounter{chronosstartdate}
+\newcounter{chronosenddate}
+\newcounter{chronosstartyear}
+\newcounter{chronosendyear}
+\newcounter{chronosyeardate}
+\newcounter{chronosthingdate}
+\newcounter{chronosotherthingdate}
+\pgfkeys{/pgf/number format,
+  int detect,
+  set thousands separator={},
+}
+\tikzset{
+  chronos/.code={% https://tex.stackexchange.com/a/159856/ - Claudio Fiandrino
+    \tikzset{%
+      align=center,
+      anchor=mid,
+      /chronos/.cd,
+      #1
+    }%
+    \setstartyear{\chronosstartyear}%
+    \setmydatenumber{chronosstartdate}{\chronosstartyear}{\chronosstartmonth}{\chronosstartday}%
+    \setmydatenumber{chronosenddate}{\chronosendyear}{\chronosendmonth}{\chronosendday}%
+    \pgfmathsetmacro\chronosunit{(\chronoswidth-20pt)/(\thechronosenddate-\thechronosstartdate)}%
+    \draw [line width=\chronosheight] (-10pt,0) coordinate (chronos pre) -- +(\chronoswidth,0) coordinate (chronos post);
+    \coordinate (chronos start) at (0,0);
+    \coordinate (chronos end) at ([xshift=-10pt]chronos post);
+    \setcounter{chronosstartyear}{\chronosstartyear}%
+    \setcounter{chronosendyear}{\chronosendyear}%
+    \def\tempa{01}%
+    \ifx\chronosstartmonth\tempa
+      \ifx\chronosstartday\tempa
+        \else\stepcounter{chronosstartyear}%
+      \fi
+      \else\stepcounter{chronosstartyear}%
+    \fi
+    \def\tempa{12}%
+    \def\tempb{31}%
+    \ifx\chronosendmonth\tempa
+      \ifx\chronosendday\tempb
+        \stepcounter{chronosendyear}%
+      \fi
+    \fi
+    \foreach \i in {\thechronosstartyear,...,\thechronosendyear} {%
+      \setmydatenumber{chronosyeardate}{\i}{01}{01}%
+      \node [above, anchor=south, yshift=.5*\chronosheight] at ({(\thechronosyeardate-\thechronosstartdate)*\chronosunit pt},0) {\i}; }
+  },
+  chronos set date/.code args={#1-#2-#3:#4}{%
+    \tikzset{%
+      /chronos/.cd,
+      #4 year={#1},
+      #4 month={#2},
+      #4 day={#3},
+    }%
+    \setmydatenumber{chronos#4date}{\csname chronos#4year\endcsname}{\csname chronos#4month\endcsname}{\csname chronos#4day\endcsname}%
+  },
+  chronos date/.style args={#1-#2-#3}{%
+    chronos set date/.expanded={#1-#2-#3:thing}%
+  },
+  chronos period date/.style args={#1-#2-#3}{%
+    chronos set date/.expanded={#1-#2-#3:otherthing}%
+  },
+  /chronos/.search also={/tikz},
+  /chronos/.cd,
+  start year/.store in=\chronosstartyear,
+  start month/.store in=\chronosstartmonth,
+  start day/.store in=\chronosstartday,
+  end year/.store in=\chronosendyear,
+  end month/.store in=\chronosendmonth,
+  end day/.store in=\chronosendday,
+  thing year/.store in=\chronosthingyear,
+  thing month/.store in=\chronosthingmonth,
+  thing day/.store in=\chronosthingday,
+  otherthing year/.store in=\chronosotherthingyear,
+  otherthing month/.store in=\chronosotherthingmonth,
+  otherthing day/.store in=\chronosotherthingday,
+  start date/.style args={#1-#2-#3}{%
+    start year={#1},
+    start month={#2},
+    start day={#3},
+  },
+  end date/.style args={#1-#2-#3}{%
+    end year={#1},
+    end month={#2},
+    end day={#3},
+  },
+  width/.store in=\chronoswidth,
+  height/.store in=\chronosheight,
+  period/.style={draw=gray},
+  period event line/.style={draw=gray, -{Triangle[width=1.5pt, reversed, length=.75pt, fill=gray]}},
+  period event/.style={anchor=north, fill=gray!25, draw=gray, rounded corners, align=center, font=\footnotesize},
+  event line/.style={draw=gray, -{Triangle[width=1.5pt, reversed, length=.75pt, fill=gray]}},
+  event/.style={anchor=north, fill=gray!25, draw=gray, rounded corners, align=center, font=\footnotesize},
+  start date=1001-10-01,
+  end date=1003-06-14,
+  width=100mm,
+  height=1pt,
+  chronos date=1850-01-01,
+  chronos period date=1851-01-01,
+}
+
+% It was this
+%\NewDocumentCommand \chronosevent { O {} m O {} +m D () { -10pt-.5*\chronosheight } }
+% But to overwrite it i had to change it to R (== Required) cfr xparse docs
+% and removed the + that is for paragrapht tokens?
+\NewDocumentCommand \chronosevent { O {} m O {} m R () { -10pt-.5*\chronosheight } }
+{%
+  \scoped[on background layer]{\path [postaction={/chronos/event line, #1}, chronos date/.expanded={#2}] ({(\thechronosthingdate-\thechronosstartdate)*\chronosunit pt},0) -- +(0,#5) node [/chronos/event, #3] {\chronosthingday/\chronosthingmonth/\chronosthingyear\\#4};}
+}
+%Same on this line
+\NewDocumentCommand \chronosperiod { O {} m O {} m O {} m R () { -10pt-.5*\chronosheight } }
+%\NewDocumentCommand \chronosperiod { O {} m O {} m O {} +m D () { -10pt-.5*\chronosheight } }
+{%
+  \tikzset{%
+    chronos date/.expanded={#2}, chronos period date/.expanded={#4}
+  }
+  \path [postaction={line width=\chronosheight, /chronos/period, #1}] ({(\thechronosthingdate-\thechronosstartdate)*\chronosunit pt},0) -- ({(\thechronosotherthingdate-\thechronosstartdate)*\chronosunit pt},0);
+  \scoped[on background layer]{\path [postaction={/chronos/period event line, #3}] ({(.5*\thechronosotherthingdate+.5*\thechronosthingdate-\thechronosstartdate)*\chronosunit pt},0) -- +(0,#7) node [/chronos/period event, #5] {\chronosthingday/\chronosthingmonth/\chronosthingyear--\chronosotherthingday/\chronosotherthingmonth/\chronosotherthingyear\\#6};}
+}
+%%%%%% END FROM
 
 \usetheme{CambridgeUS}
 
@@ -40,11 +169,11 @@
   \begin{itemize}
 	    \item About 30 items exist.
 	    \item I focused on a subset of 6: \\
-	    \begin{tabular}{ccc}
-	      Id & Name & \# samples \\ \hline
-	      1 & Spanklem & 223 \\
-	      2.0 & Vleugelmoer Opleg Recht - Oud rond twee gaten & 208 \\
-	      2.1 & Vleugelmoer Opleg Recht - Nieuw geen gaten  & 244 \\
+	    \begin{tabular}{c|ccc}
+	      Id & Name & \# samples & Data Collection Date\\ \hline
+	      1 & Spanklem & 223 &  -2017 \\
+	      2.0 & Vleugelmoer Opleg Recht - Oud& 208 \\
+	      2.1 & Vleugelmoer Opleg Recht - Nieuw& 244 \\
 	      3 & Vleugelmoer Opleg Rond & 238 \\
 	      4.0 & Variable Spanklem - Kort & 270 \\
 	      4.1 & Variable Spanklem - Lang & 251  \\
@@ -54,6 +183,50 @@
 \end{frame}
 
 \section{Approach}
+\begin{frame}{5-fold cross-validation}
+\begin{figure}
+\includegraphics[width=\textwidth]{5foldCV}
+%TODO include the figure figures/5-fold-...
+%And reference it
+\end{figure}
+\end{frame}
+
+\begin{frame}
+\begin{figure}
+\begin{tikzpicture}
+  [
+    chronos={%
+      width=120mm,
+      height=10pt,
+      start date=2017-08-01,
+      end date=2018-12-31,
+      period/.style={draw=green},
+      event line/.append style={draw=blue},
+      period event line/.append style={draw=green},
+      event/.append style={fill=blue!25, draw=blue, text=blue},
+      period event/.append style={fill=green!25, draw=green!75!black, text=green!75!black},
+    }
+  ]
+  \chronosperiod [draw=red] {2017-09-04} [draw=red] {2017-11-20} [fill=red!25, draw=red, text=red] {First period} (40pt+.5*\chronosheight)
+  \chronosevent [] {2017-09-04} [] {Acquire first batch of images} (-50pt-.5*\chronosheight)
+  \chronosevent [] {2017-09-13} [] {Cropping first batch of Images} (-100pt-.5*\chronosheight)
+  \chronosevent [] {2017-08-13} [] {Initial discussion with Jelle} (-10pt -.5*\chronosheight)
+  \chronosperiod [] {2018-02-01} [] {2018-07-11} [] {KUL courses} (-20pt-.5*\chronosheight)
+\end{tikzpicture}
+\end{figure}
+\end{frame}
+
+\begin{frame}
+\begin{itemize}
+ \item If signal to noise of image is too large, NN have hard time picking up on the signal.
+ \item I learned it the hard way.
+ \item First uncropped 675 uncropped images.
+ \item Poor training results 
+ \item After 1,5h of cropping 675 images.
+ \item And retraining the network -> better results 80\% acc?
+\end{itemize}
+\end{frame}
+
 
 \begin{frame}
 \begin{itemize}
@@ -110,8 +283,54 @@
 \end{figure}
 \end{frame}
 
+\begin{frame}{Data augmentation 1, 2.0, 2.1}
+\begin{figure}
+\begin{tabular}{ccc}
+
+Item 1  &
+Item 2.0 &
+Item 2.1 \\
+\subfloat[caption]{\includegraphics[width = 2.0cm]{aug1.0_1.png}} &
+\subfloat[caption]{\includegraphics[width = 2.0cm]{aug1.0_2.png}} &
+\subfloat[caption]{\includegraphics[width = 2.0cm]{aug1.0_3.png}} \\
+\subfloat[caption]{\includegraphics[width = 2.0cm]{aug2.0_1.png}} &
+\subfloat[caption]{\includegraphics[width = 2.0cm]{aug2.0_2.png}} &
+\subfloat[caption]{\includegraphics[width = 2.0cm]{aug2.0_3.png}} \\
+\subfloat[caption]{\includegraphics[width = 2.0cm]{aug2.1_1.png}} &
+\subfloat[caption]{\includegraphics[width = 2.0cm]{aug2.1_2.png}} &
+\subfloat[caption]{\includegraphics[width = 2.0cm]{aug2.1_3.png}} \\ 
+\end{tabular}
+\caption{Augmentation Example Grid}
+\end{figure}
+\end{frame}
+
 \section{Results}
 \section{Suggestions}
+\begin{frame}{Technical}
+\begin{itemize}
+ \item Multiple camera's will give more reliable detection.
+ \item Depth sensor (e.g. Microsoft Kinect sensor) will improve accuracy 
+  \begin{itemize}
+  \item Transfer learning not possible
+  \item 
+  \end{itemize}
+ \item Exploring 3D renderings of the CAD files could help recognition.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Project}
+\begin{itemize}
+ \item Consider collaboration with University.
+ \item Master Artificial Inteligence is booming, Internship students could help create the machine learning pipeline.
+ \item Depth sensor (e.g. Microsoft Kinect sensor) will improve accuracy 
+  \begin{itemize}
+  \item Transfer learning not possible
+  \item 
+  \end{itemize}
+ \item Exploring 3D renderings of the CAD files could help recognition.
+\end{itemize}
+\end{frame}
+
 \section{Q\&A}
 \begin{frame}
   \begin{itemize}
