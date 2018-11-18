@@ -1,1 +1,0 @@
-rename the files to not include dots that are not related to file extensions (includ graphicx can't handle it) 

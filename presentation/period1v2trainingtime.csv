@@ -1,0 +1,9 @@
+Period,modelID,Cvsplit,approx_hours,best_ValLoss
+1,mXc_v5,split0,7,0.17
+1,mXc_v6,split0,7,0.2
+1,mXc_v5,split2,7,0.16
+1,mXc_v6,split2,7,0.18
+2,mXc_v5,split0,0.6666666667,0.25
+2,mXc_v6,split0,0.65,0.22
+2,mXc_v5,split2,0.5833333333,0.2
+2,mXc_v6,split2,0.6666666667,0.22
