@@ -27,3 +27,9 @@ Write script that does the following:
 -----------------CODE TODO------------
 - Create an CNN object detection transfer learning hyper param tuner library for Keras.
 - Generate GAN images for each class to be used as augmentation.
+
+
+-----------------LaTeX TODO-------------
+Make a better tabular latex package?
+-Escaping whitespace
+-easy vertical allignment/grid creation

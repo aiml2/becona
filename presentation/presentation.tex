@@ -7,7 +7,17 @@
 %\usepackage{chronology}
 \usepackage{chronosys}
 \usepackage{graphicx}
+\usepackage{mwe} % for raisebox
 \usepackage{subfig}
+\usepackage{multirow}
+\usepackage{makecell}%To keep spacing of text in tables
+%\renewcommand\cellalign{cc}
+\newcommand{\mlcell}[1]{\begin{tabular}{@{}c@{}}#1\end{tabular}}
+\usepackage{tabularx} %To do vertical spacing
+\usepackage{cellspace}
+\setlength\cellspacetoplimit{1pt}
+\setlength\cellspacebottomlimit{1pt}
+\addparagraphcolumntypes{x, }
 \graphicspath{ {./figures/} }
 
 %%%%FROM
@@ -182,7 +192,27 @@
   \end{itemize}
 \end{frame}
 
-\section{Approach}
+%TODO: Explain the preiod 1-2
+\section{Approach \& Lessons Learned}
+\begin{frame}{Hardware \& Software Stack}
+\begin{table}
+\begin{tabular}{r|cc}
+& \textbf{Period 1} & \textbf{Period 2} \\ \hline
+Keras &  2.0.6 & \textbf{2.2.2} \\
+Tensorflow & 1.3.0 & \textbf{1.13.0} \\
+Python & 3.6 & 3.6 \\
+cuDNN & 5.1 & \textbf{7.0} \\ 
+CUDA & 8.0 & \textbf{9.0} \\
+Ubuntu & 16.04.3 LTS & \textbf{fresh 16.04.3 LTS} \\
+Storage & Seagate 3TB-7600RPM & \textbf{Samsung 265GB SSD} \\
+NVIDIA GPU & \multicolumn{2}{c}{GTX 1060 6GB} \\
+Intel CPU &  \multicolumn{2}{c}{Core i5-3570K CPU \@ 3.40GHz} \\
+RAM & \multicolumn{2}{c}{16 GB} \\
+\end{tabular}
+\caption{In P1 trained with testfiles on HDD, later in P2 reinstalled full software stack on new SSD}
+\end{table}
+\end{frame}
+
 \begin{frame}{5-fold cross-validation}
 \begin{figure}
 \includegraphics[width=\textwidth]{5foldCV}
@@ -190,6 +220,7 @@
 %And reference it
 \end{figure}
 \end{frame}
+
 
 \begin{frame}
 \begin{figure}
@@ -207,7 +238,7 @@
       period event/.append style={fill=green!25, draw=green!75!black, text=green!75!black},
     }
   ]
-  \chronosperiod [draw=red] {2017-09-04} [draw=red] {2017-11-20} [fill=red!25, draw=red, text=red] {First period} (40pt+.5*\chronosheight)
+  \chronosperiod [draw=red] {2017-09-04} [draw=red] {2017-11-20} [fill=red!25, draw=red, text=red] {First period P1} (40pt+.5*\chronosheight)
   \chronosevent [] {2017-09-04} [] {Acquire first batch of images} (-50pt-.5*\chronosheight)
   \chronosevent [] {2017-09-13} [] {Cropping first batch of Images} (-100pt-.5*\chronosheight)
   \chronosevent [] {2017-08-13} [] {Initial discussion with Jelle} (-10pt -.5*\chronosheight)
@@ -216,17 +247,44 @@
 \end{figure}
 \end{frame}
 
-\begin{frame}
+\begin{frame}{LL: Signal/Noise matters}
 \begin{itemize}
  \item If signal to noise of image is too large, NN have hard time picking up on the signal.
- \item I learned it the hard way.
- \item First uncropped 675 uncropped images.
+ \item I learned it the hard way:
+\begin{itemize}
+ \item First trained with 675 uncropped rectangular images.
  \item Poor training results 
  \item After 1,5h of cropping 675 images.
- \item And retraining the network -> better results 80\% acc?
+ \item And retraining the network with squared crops using cropall(ref)
+ \item better results ~80\% acc?
+\end{itemize}
 \end{itemize}
 \end{frame}
 
+\begin{frame}{LL: Disk speed matters}
+\begin{table}
+\caption{Rough estimate: Factor 10 training speed improvement in Period 2}
+\begin{tabular}{ccccc}
+Period & Experiment ID & CV-split & \mlcell{Approximate \\ Training \\ Hours} & Best Validation Loss \\
+1 & mXc\_v5 & split0 & $7$ & $0.17$ \\
+1 & mXc\_v6 & split0 & $7$ & $0.2$ \\
+1 & mXc\_v5 & split2 & $7$ & $0.16$ \\
+1 & mXc\_v6 & split2 & $7$ & $0.18$ \\
+2 & mXc\_v5 & split0 & $0.6666$ & $0.25$ \\
+2 & mXc\_v6 & split0 & $0.6500$ & $0.22$ \\
+2 & mXc\_v5 & split2 & $0.5833$ & $0.2$ \\
+2 & mXc\_v6 & split2 & $0.6666$ & $0.22$ \\
+\end{tabular}
+\end{table}
+\end{frame}
+
+\begin{frame}{LL: Latest GPU/Deep Learning libraries matter}
+\begin{itemize}
+  \begin{itemize}
+  \item Upgraded from NVIDIA CUDA 8.0 to CUDA 9.0
+  \end{itemize}
+\end{itemize}
+\end{frame}
 
 \begin{frame}
 \begin{itemize}
@@ -274,7 +332,7 @@
             \path (H-\source) edge (O-\dest);
 
     % Annotate the layers
-    \node[annot,above of=H-1, node distance=1cm] (hl) {Hidden layers};
+    \node[annot,above of=H-1, node distance=1cm] (hl) {Hidden layer\textbf{s}};
     \node[annot,left of=hl] {Input layer}; % 299x299 RGB image
     \node[annot,right of=hl] {Output layer};
     \node[annot,below of=I-2] {$\vdots$};
@@ -285,30 +343,71 @@
 
 \begin{frame}{Data augmentation 1, 2.0, 2.1}
 \begin{figure}
-\begin{tabular}{ccc}
-
-Item 1  &
-Item 2.0 &
-Item 2.1 \\
-\subfloat[caption]{\includegraphics[width = 2.0cm]{aug1.0_1.png}} &
-\subfloat[caption]{\includegraphics[width = 2.0cm]{aug1.0_2.png}} &
-\subfloat[caption]{\includegraphics[width = 2.0cm]{aug1.0_3.png}} \\
-\subfloat[caption]{\includegraphics[width = 2.0cm]{aug2.0_1.png}} &
-\subfloat[caption]{\includegraphics[width = 2.0cm]{aug2.0_2.png}} &
-\subfloat[caption]{\includegraphics[width = 2.0cm]{aug2.0_3.png}} \\
-\subfloat[caption]{\includegraphics[width = 2.0cm]{aug2.1_1.png}} &
-\subfloat[caption]{\includegraphics[width = 2.0cm]{aug2.1_2.png}} &
-\subfloat[caption]{\includegraphics[width = 2.0cm]{aug2.1_3.png}} \\ 
+%remove subfigure captions and additional whitespace
+\captionsetup[subfigure]{labelformat=empty,farskip=0pt,nearskip=0pt,captionskip=0pt}
+\begin{tabular}{cc}
+\mlcell{Item \\1.0} &
+\raisebox{-0.5\height}{ %centers the image on the line
+\subfloat[]{\includegraphics[width = 0.18\textwidth]{aug1-0_1.png}} 
+\subfloat[]{\includegraphics[width = 0.18\textwidth]{aug1-0_2.png}} 
+\subfloat[]{\includegraphics[width = 0.18\textwidth]{aug1-0_3.png}}
+} \\[-2ex] %removes unnecessary vertical whitespace
+\mlcell{Item \\ 2.0} &
+\raisebox{-0.5\height}{
+\subfloat[]{\includegraphics[width = 0.18\textwidth]{aug2-0_1.png}} 
+\subfloat[]{\includegraphics[width = 0.18\textwidth]{aug2-0_2.png}} 
+\subfloat[]{\includegraphics[width = 0.18\textwidth]{aug2-0_3.png}}
+} \\[-2ex] %removes unnecessary vertical whitespace
+\mlcell{Item \\ 2.1} &
+\raisebox{-0.5\height}{
+\subfloat[]{\includegraphics[width = 0.18\textwidth]{aug2-1_1.png}} 
+\subfloat[]{\includegraphics[width = 0.18\textwidth]{aug2-1_2.png}} 
+\subfloat[]{\includegraphics[width = 0.18\textwidth]{aug2-1_3.png}}
+} \\
 \end{tabular}
-\caption{Augmentation Example Grid}
+\end{figure}
+\end{frame}
+
+\begin{frame}{Data augmentation 3, 4.0, 4.1}
+\begin{figure}
+%remove subfigure captions and additional whitespace
+\captionsetup[subfigure]{labelformat=empty,farskip=0pt,nearskip=0pt}
+\begin{tabular}{cc}
+\mlcell{Item \\1.0} &
+\raisebox{-0.5\height}{ %centers the image on the line
+\subfloat[]{\includegraphics[width = 0.18\textwidth]{aug3-0_1.png}} 
+\subfloat[]{\includegraphics[width = 0.18\textwidth]{aug3-0_2.png}} 
+\subfloat[]{\includegraphics[width = 0.18\textwidth]{aug3-0_3.png}}
+} \\[-2ex] %removes unnecessary vertical whitespace
+\mlcell{Item \\ 2.0} &
+\raisebox{-0.5\height}{
+\subfloat[]{\includegraphics[width = 0.18\textwidth]{aug4-0_1.png}} 
+\subfloat[]{\includegraphics[width = 0.18\textwidth]{aug4-0_2.png}} 
+\subfloat[]{\includegraphics[width = 0.18\textwidth]{aug4-0_3.png}}
+} \\[-2ex] %removes unnecessary vertical whitespace
+\mlcell{Item \\ 2.1} &
+\raisebox{-0.5\height}{
+\subfloat[]{\includegraphics[width = 0.18\textwidth]{aug4-1_1.png}} 
+\subfloat[]{\includegraphics[width = 0.18\textwidth]{aug4-1_2.png}} 
+\subfloat[]{\includegraphics[width = 0.18\textwidth]{aug4-1_3.png}}
+} \\
+\end{tabular}
 \end{figure}
 \end{frame}
 
 \section{Results}
-\section{Suggestions}
+\section{Future Work}
+\begin{frame}{Advice}
+\begin{itemize}
+  \item Create Image Capture Pipeline
+  \item Multiple-camera's -> vote per camera's == ensemble model
+  \item Deploy current best model and monitor wether performance degrades
+  \item As soon as enough new samples 
+\end{itemize}
+\end{frame}{}
 \begin{frame}{Technical}
 \begin{itemize}
- \item Multiple camera's will give more reliable detection.
+ \item Multi-cameras will give more reliable detection.
  \item Depth sensor (e.g. Microsoft Kinect sensor) will improve accuracy 
   \begin{itemize}
   \item Transfer learning not possible
@@ -321,7 +420,12 @@ Item 2.1 \\
 \begin{frame}{Project}
 \begin{itemize}
  \item Consider collaboration with University.
- \item Master Artificial Inteligence is booming, Internship students could help create the machine learning pipeline.
+ \item Master Artificial Inteligence is booming
+  \begin{itemize}
+  \item Internship students could help create the machine learning pipeline.
+  \item Partnership with industry is highly encouraged
+  \item  
+  \end{itemize}
  \item Depth sensor (e.g. Microsoft Kinect sensor) will improve accuracy 
   \begin{itemize}
   \item Transfer learning not possible
@@ -335,7 +439,7 @@ Item 2.1 \\
 \begin{frame}
   \begin{itemize}
 	    \item How does the system compare to human classification?
-	    \item Speed, cost, effort, \emph{accuracy}, FP vs FN
+	    \item Speed (vs 24/7), cost (long-term cost hard to estimate), effort, \emph{accuracy}, FP vs FN
 	    \item TEST
   \end{itemize}
 \end{frame}
