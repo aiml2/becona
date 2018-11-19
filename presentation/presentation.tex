@@ -183,7 +183,7 @@
 	      \item Educational project for myself 
 	    \end{itemize}
 	    \item Best image classification systems currently use Convolutional Neural Networks.
-	    \item \textbf{Are Convolutional Neural Networks (CNNs) a valid approach for recognizing the Becona rental items?}
+	    \item \textbf{Are Convolutional Neural Networks (CNNs) a valid approach for classifying the Becona rental items?}
   \end{itemize}
 \end{frame}
 
@@ -292,8 +292,8 @@
 
 \begin{frame}
 \begin{itemize}
- \item Training an image classification Neural Network from scratch needs \textbf{millions} of samples and days to weeks of computation time 
- \item In two afternoons I took merely 1434 pictures.
+ \item Training an image classification Neural Network from scratch needs \textbf{millions} of images and days to weeks of computation time 
+ \item In two afternoons I took merely 1434 pictures and don't have a datacenter.
  \item \textbf{solution}: stand on the shoulders of giants $\rightarrow$ \textbf{transfer learning}
   \begin{itemize}
     \item Start from Google-trained InceptionV3 \& Xception Neural Networks
@@ -414,15 +414,15 @@ RAM & \multicolumn{2}{c}{16 GB} \\
 \begin{table}
 \caption{Rough estimate: Factor 10 training speed improvement in Period 2}
 \begin{tabular}{ccccc}
-Period & Experiment ID & CV-split & \mlcell{Approximate \\ Training \\ Hours} & Best Validation Loss \\ \hline
-1 & mXc\_v5 & split0 & $7$ & $0.17$ \\
-1 & mXc\_v6 & split0 & $7$ & $0.2$ \\
-1 & mXc\_v5 & split2 & $7$ & $0.16$ \\
-1 & mXc\_v6 & split2 & $7$ & $0.18$ \\
-2 & mXc\_v5 & split0 & $0.6666$ & $0.25$ \\
-2 & mXc\_v6 & split0 & $0.6500$ & $0.22$ \\
-2 & mXc\_v5 & split2 & $0.5833$ & $0.2$ \\
-2 & mXc\_v6 & split2 & $0.6666$ & $0.22$ \\
+Period & Experiment ID & \mlcell{Approximate \\ Training \\ Hours} & \mlcell{Best Validation \\ Loss (lower = better)} \\ \hline
+1 & mXc\_v5\_split0 & $7$ & $0.17$ \\
+1 & mXc\_v6\_split0 & $7$ & $0.2$ \\
+1 & mXc\_v5\_split2 & $7$ & $0.16$ \\
+1 & mXc\_v6\_split2 & $7$ & $0.18$ \\
+2 & mXc\_v5\_split0 & $0.6666$ & $0.25$ \\
+2 & mXc\_v6\_split0 & $0.6500$ & $0.22$ \\
+2 & mXc\_v5\_split2 & $0.5833$ & $0.2$ \\
+2 & mXc\_v6\_split2 & $0.6666$ & $0.22$ \\
 \end{tabular}
 \end{table}
 \end{frame}
@@ -438,17 +438,26 @@ Period & Experiment ID & CV-split & \mlcell{Approximate \\ Training \\ Hours} & 
   \\ $\Rightarrow$ Better results ~80\% accuracy?
 \end{itemize}
 \end{itemize}
-
 \end{frame}
+
 \begin{frame}{LL: uncropped vs cropped}
 \begin{tabular}{cc}
 uncropped & cropped \\
 \includegraphics[width=0.4\textwidth]{2_1uncrop.jpg} 
 & \raisebox{0.5\height}{\includegraphics[width=0.4\textwidth]{2_1crop.jpg}} \\
 \end{tabular}
-
 \end{frame}
 
+\begin{frame}{LL: I learned a lot!}
+\begin{itemize}
+ \item Setting up a Graphics Processing Unit CNN training machine (twice). 
+ \item Using state of the art CNN libraries
+ \item Improved python scripting 
+ \item Learned a lot about Neural Networks and Machine Learning 
+ \item Read many academic papers, books, blogs, \ldots 
+\end{itemize}
+\huge{For me the project was a huge success!}
+\end{frame}
 
 
 
@@ -469,24 +478,35 @@ uncropped & cropped \\
   \begin{itemize}
     \item Has Xception with ImageNet weights as basemodel.
     \item Fully-connected penultimate layer of 256 neurons.
-    \item Was trained with Stochastic Gradient Descent first 
-    \item And the Adam optimizer secondly 
+    \item Was optimized with Stochastic Gradient Descent first and the Adam optimizer finally. 
   \end{itemize}
  \item Has average validation loss of $0.1011802$ \\ $\Rightarrow$ validation accuracy of $ 1 - 0.1011802 = 0.8988198 \approx 90\%$
 \end{itemize}
+\end{frame}
+
+\begin{frame}{Caveat}
+Note that while 90\% accuracy seems impressive this is still a very limited dataset.
+There is no guarantee that the model will perform as well with images taken today.
+Models CAN degrade over time and are biased by the dataset they are trained on.
 \end{frame}
 
 \section{Future Work}
 \begin{frame}{Advice}
 \begin{itemize}
   \item Create Image Capture Pipeline
+  \item For CNNs: more data, better results
   \item Multiple-camera's $\rightarrow$ vote per camera
-  \item Deploy current best model and monitor whether performance degrades
+  \begin{itemize}
+  \item Upside: Will likely improve accuracy, more camera's == more data
+  \item Downside: Processing multiple images fast enough might be a challenge 
+  \end{itemize}
+  \item Deploy current best model and monitor whether performance degrades?
 \end{itemize}
 \end{frame}{}
-\begin{frame}{Technical}
+
+\begin{frame}{CNN Technical}
 \begin{itemize}
- \item Multi-cameras will give more reliable detection.
+ \item Multiple-cameras will give more reliable detection.
   \begin{itemize}
   \item Upside: Will likely improve accuracy, more camera's == more data
   \item Downside: Processing multiple images fast enough might be a challenge 
@@ -494,7 +514,7 @@ uncropped & cropped \\
  \item Adding depth sensor (e.g. Microsoft Kinect sensor) will likely improve accuracy 
   \begin{itemize}
   \item Upside: Will likely improve accuracy 
-  \item Downside: transfer learning not yet possible, long training times
+  \item Downside: transfer learning not yet possible, long training times, $\frac{signal}{noise}?$
   \end{itemize}
  \item Exploring 3D renderings of the CAD files could help recognition.
     \begin{itemize}
