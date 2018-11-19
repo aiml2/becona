@@ -162,7 +162,7 @@
 \tableofcontents
 \end{frame}
 
-\section{Problem}
+\section{Problem Definition}
 \begin{frame}{Problem Definition}
   \begin{itemize}
 	    \item Automated Sorting of Concrete Casting Equipment 
@@ -176,20 +176,25 @@
 \end{frame}
 
 \begin{frame}{Items}
-  \begin{itemize}
-	    \item About 30 items exist.
-	    \item I focused on a subset of 6: \\
-	    \begin{tabular}{c|ccc}
-	      Id & Name & \# samples & Data Collection Date\\ \hline
-	      1 & Spanklem & 223 &  -2017 \\
-	      2.0 & Vleugelmoer Opleg Recht - Oud& 208 \\
-	      2.1 & Vleugelmoer Opleg Recht - Nieuw& 244 \\
-	      3 & Vleugelmoer Opleg Rond & 238 \\
-	      4.0 & Variable Spanklem - Kort & 270 \\
-	      4.1 & Variable Spanklem - Lang & 251  \\
-	    \end{tabular}
-	    \item Of which 2.x and 4.x have very high visual similarity
-  \end{itemize}
+	About 30 items exist, I focused on a subset of 6: \\
+	\begin{figure}
+	\captionsetup[subfigure]{labelformat=empty,farskip=0pt,nearskip=0pt,captionskip=0pt}
+	\begin{tabular}{c|ccc}
+	  Id & Name & \# samples & Image \\ \hline
+	  1 & Spanklem & 223 
+	  &  \raisebox{-0.5\height}{\subfloat[]{\includegraphics[width = 0.10\textwidth]{1.jpg}} } \\[-2ex] %removes unnecessary vertical whitespace
+	  \textbf{2.0} & Vleugelmoer Opleg Recht - Oud& 208 
+	  &  \raisebox{-0.5\height}{\subfloat[]{\includegraphics[width = 0.10\textwidth]{2_0.jpg}} } \\[-2ex] %removes unnecessary vertical whitespace
+	  \textbf{2.1} & Vleugelmoer Opleg Recht - Nieuw& 244
+	  &  \raisebox{-0.5\height}{\subfloat[]{\includegraphics[width = 0.10\textwidth]{2_1.jpg}} } \\[-2ex] %removes unnecessary vertical whitespace
+	  3 & Vleugelmoer Opleg Rond & 238
+	  &  \raisebox{-0.5\height}{\subfloat[]{\includegraphics[width = 0.10\textwidth]{3.jpg}} } \\[-2ex] %removes unnecessary vertical whitespace
+	  \textbf{4.0} & Variable Spanklem - Kort & 270 
+	  &  \raisebox{-0.5\height}{\subfloat[]{\includegraphics[width = 0.10\textwidth]{4_0.jpg}} } \\[-2ex] %removes unnecessary vertical whitespace
+	  \textbf{4.1} & Variable Spanklem - Lang & 251
+	  &  \raisebox{-0.5\height}{\subfloat[]{\includegraphics[width = 0.10\textwidth]{4_1.jpg}} } \\[-2ex] %removes unnecessary vertical whitespace
+	\end{tabular}
+	\end{figure}
 \end{frame}
 
 %TODO: Explain the preiod 1-2
@@ -209,7 +214,7 @@ NVIDIA GPU & \multicolumn{2}{c}{GTX 1060 6GB} \\
 Intel CPU &  \multicolumn{2}{c}{Core i5-3570K CPU \@ 3.40GHz} \\
 RAM & \multicolumn{2}{c}{16 GB} \\
 \end{tabular}
-\caption{In P1 trained with testfiles on HDD, later in P2 reinstalled full software stack on new SSD}
+\caption{In P1 trained with testfiles on HDD, later in P2 reinstalled full software stack, with updated libraries, on new SSD}
 \end{table}
 \end{frame}
 
@@ -223,14 +228,17 @@ RAM & \multicolumn{2}{c}{16 GB} \\
 
 
 \begin{frame}
+\begin{center}
 \begin{figure}
 \begin{tikzpicture}
   [
     chronos={%
       width=120mm,
       height=10pt,
-      start date=2017-08-01,
-      end date=2018-12-31,
+      start date=2017-01-01,
+      %start date=2017-08-01,
+      end date=2019-01-20,
+      %end date=2018-12-31,
       period/.style={draw=green},
       event line/.append style={draw=blue},
       period event line/.append style={draw=green},
@@ -238,13 +246,16 @@ RAM & \multicolumn{2}{c}{16 GB} \\
       period event/.append style={fill=green!25, draw=green!75!black, text=green!75!black},
     }
   ]
-  \chronosperiod [draw=red] {2017-09-04} [draw=red] {2017-11-20} [fill=red!25, draw=red, text=red] {First period P1} (40pt+.5*\chronosheight)
+  \chronosperiod [draw=red] {2017-09-04} [draw=red] {2017-11-20} [fill=red!25, draw=red, text=red] {Period P1: \\ Data acquisition, first models, \\ 80\% accuracy} (70pt+.5*\chronosheight)
   \chronosevent [] {2017-09-04} [] {Acquire first batch of images} (-50pt-.5*\chronosheight)
-  \chronosevent [] {2017-09-13} [] {Cropping first batch of Images} (-100pt-.5*\chronosheight)
-  \chronosevent [] {2017-08-13} [] {Initial discussion with Jelle} (-10pt -.5*\chronosheight)
-  \chronosperiod [] {2018-02-01} [] {2018-07-11} [] {KUL courses} (-20pt-.5*\chronosheight)
+  \chronosevent [] {2017-09-13} [] {Cropping first batch of Images} (-90pt-.5*\chronosheight)
+  \chronosevent [] {2017-08-13} [] {Initial discussion with Jelle} (110pt -.5*\chronosheight)
+  \chronosperiod [] {2017-11-21} [] {2018-09-22} [] { Moving, KUL courses, \\ Restart work @ NVISO, Summertime} (-7pt-.5*\chronosheight)
+  \chronosperiod [draw=red] {2018-09-23} [draw=red] {2018-11-19} [fill=red!25, draw=red, text=red] {Period P2: \\ Reinstall, Refining, Reporting, \\ 90\% accuracy} (60pt+.5*\chronosheight)
+  
 \end{tikzpicture}
 \end{figure}
+\end{center}
 \end{frame}
 
 \begin{frame}{LL: Signal/Noise matters}
@@ -280,6 +291,7 @@ Period & Experiment ID & CV-split & \mlcell{Approximate \\ Training \\ Hours} & 
 
 \begin{frame}{LL: Latest GPU/Deep Learning libraries matter}
 \begin{itemize}
+  \item From P1 to P2
   \begin{itemize}
   \item Upgraded from NVIDIA CUDA 8.0 to CUDA 9.0
   \end{itemize}
@@ -290,7 +302,7 @@ Period & Experiment ID & CV-split & \mlcell{Approximate \\ Training \\ Hours} & 
 \begin{itemize}
  \item Training a Neural Network from scratch needs millions of samples 
  \item In two afternoons I took merely 1434 pictures
- \item \textbf{solution}: stand on the shoulder of giants $\rightarrow$ \textbf{transfer learning}
+ \item \textbf{solution}: stand on the shoulders of giants $\rightarrow$ \textbf{transfer learning}
 \end{itemize}
 \end{frame}
 
@@ -400,7 +412,7 @@ Period & Experiment ID & CV-split & \mlcell{Approximate \\ Training \\ Hours} & 
 \begin{frame}{Advice}
 \begin{itemize}
   \item Create Image Capture Pipeline
-  \item Multiple-camera's -> vote per camera's == ensemble model
+  \item Multiple-camera's $\rightarrow$ vote per camera's == ensemble model
   \item Deploy current best model and monitor wether performance degrades
   \item As soon as enough new samples 
 \end{itemize}
