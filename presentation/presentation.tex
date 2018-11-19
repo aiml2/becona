@@ -152,13 +152,24 @@
 \author{Dieter Castel}
 \date{\today}
 
+\AtBeginSection[]{
+  \begin{frame}
+  \vfill
+  \centering
+  \begin{beamercolorbox}[sep=8pt,center,shadow=true,rounded=true]{title}
+    \usebeamerfont{title}\insertsectionhead\par%
+  \end{beamercolorbox}
+  \vfill
+  \end{frame}
+}
+
 \begin{document}
 
 \begin{frame}
   \titlepage
 \end{frame}
 
-\begin{frame}{overview}
+\begin{frame}{Overview}
 \tableofcontents
 \end{frame}
 
@@ -171,16 +182,17 @@
 	      \item Focused on Object Recognition Software System
 	      \item Educational project for myself 
 	    \end{itemize}
-	    \item \textbf{Are Convolutional Neural Networks a valid approach for recognizing the Becona rental items?}
+	    \item Best image classification systems currently use Convolutional Neural Networks.
+	    \item \textbf{Are Convolutional Neural Networks (CNNs) a valid approach for recognizing the Becona rental items?}
   \end{itemize}
 \end{frame}
 
-\begin{frame}{Items}
-	About 30 items exist, I focused on a subset of 6: \\
+\begin{frame}{Items} 
+	About 30 items exist, for the proof-of-concept I focused on a subset of 6: \\
 	\begin{figure}
 	\captionsetup[subfigure]{labelformat=empty,farskip=0pt,nearskip=0pt,captionskip=0pt}
 	\begin{tabular}{c|ccc}
-	  Id & Name & \# samples & Image \\ \hline
+	  Id & Name & \# images & example \\ \hline
 	  1 & Spanklem & 223 
 	  &  \raisebox{-0.5\height}{\subfloat[]{\includegraphics[width = 0.10\textwidth]{1.jpg}} } \\[-2ex] %removes unnecessary vertical whitespace
 	  \textbf{2.0} & Vleugelmoer Opleg Recht - Oud& 208 
@@ -195,121 +207,12 @@
 	  &  \raisebox{-0.5\height}{\subfloat[]{\includegraphics[width = 0.10\textwidth]{4_1.jpg}} } \\[-2ex] %removes unnecessary vertical whitespace
 	\end{tabular}
 	\end{figure}
+	%Talk about high similarity of 2.X and 4.X
 \end{frame}
 
-%TODO: Explain the preiod 1-2
-\section{Approach \& Lessons Learned}
-\begin{frame}{Hardware \& Software Stack}
-\begin{table}
-\begin{tabular}{r|cc}
-& \textbf{Period 1} & \textbf{Period 2} \\ \hline
-Keras &  2.0.6 & \textbf{2.2.2} \\
-Tensorflow & 1.3.0 & \textbf{1.13.0} \\
-Python & 3.6 & 3.6 \\
-cuDNN & 5.1 & \textbf{7.0} \\ 
-CUDA & 8.0 & \textbf{9.0} \\
-Ubuntu & 16.04.3 LTS & \textbf{fresh 16.04.3 LTS} \\
-Storage & Seagate 3TB-7600RPM & \textbf{Samsung 265GB SSD} \\
-NVIDIA GPU & \multicolumn{2}{c}{GTX 1060 6GB} \\
-Intel CPU &  \multicolumn{2}{c}{Core i5-3570K CPU \@ 3.40GHz} \\
-RAM & \multicolumn{2}{c}{16 GB} \\
-\end{tabular}
-\caption{In P1 trained with testfiles on HDD, later in P2 reinstalled full software stack, with updated libraries, on new SSD}
-\end{table}
-\end{frame}
-
-\begin{frame}{5-fold cross-validation}
-\begin{figure}
-\includegraphics[width=\textwidth]{5foldCV}
-%TODO include the figure figures/5-fold-...
-%And reference it
-\end{figure}
-\end{frame}
-
-
-\begin{frame}
-\begin{center}
-\begin{figure}
-\begin{tikzpicture}
-  [
-    chronos={%
-      width=120mm,
-      height=10pt,
-      start date=2017-01-01,
-      %start date=2017-08-01,
-      end date=2019-01-20,
-      %end date=2018-12-31,
-      period/.style={draw=green},
-      event line/.append style={draw=blue},
-      period event line/.append style={draw=green},
-      event/.append style={fill=blue!25, draw=blue, text=blue},
-      period event/.append style={fill=green!25, draw=green!75!black, text=green!75!black},
-    }
-  ]
-  \chronosperiod [draw=red] {2017-09-04} [draw=red] {2017-11-20} [fill=red!25, draw=red, text=red] {Period P1: \\ Data acquisition, first models, \\ 80\% accuracy} (70pt+.5*\chronosheight)
-  \chronosevent [] {2017-09-04} [] {Acquire first batch of images} (-50pt-.5*\chronosheight)
-  \chronosevent [] {2017-09-13} [] {Cropping first batch of Images} (-90pt-.5*\chronosheight)
-  \chronosevent [] {2017-08-13} [] {Initial discussion with Jelle} (110pt -.5*\chronosheight)
-  \chronosperiod [] {2017-11-21} [] {2018-09-22} [] { Moving, KUL courses, \\ Restart work @ NVISO, Summertime} (-7pt-.5*\chronosheight)
-  \chronosperiod [draw=red] {2018-09-23} [draw=red] {2018-11-19} [fill=red!25, draw=red, text=red] {Period P2: \\ Reinstall, Refining, Reporting, \\ 90\% accuracy} (60pt+.5*\chronosheight)
-  
-\end{tikzpicture}
-\end{figure}
-\end{center}
-\end{frame}
-
-\begin{frame}{LL: Signal/Noise matters}
-\begin{itemize}
- \item If signal to noise of image is too large, NN have hard time picking up on the signal.
- \item I learned it the hard way:
-\begin{itemize}
- \item First trained with 675 uncropped rectangular images.
- \item Poor training results 
- \item After 1,5h of cropping 675 images.
- \item And retraining the network with squared crops using cropall(ref)
- \item better results ~80\% acc?
-\end{itemize}
-\end{itemize}
-\end{frame}
-
-\begin{frame}{LL: Disk speed matters}
-\begin{table}
-\caption{Rough estimate: Factor 10 training speed improvement in Period 2}
-\begin{tabular}{ccccc}
-Period & Experiment ID & CV-split & \mlcell{Approximate \\ Training \\ Hours} & Best Validation Loss \\
-1 & mXc\_v5 & split0 & $7$ & $0.17$ \\
-1 & mXc\_v6 & split0 & $7$ & $0.2$ \\
-1 & mXc\_v5 & split2 & $7$ & $0.16$ \\
-1 & mXc\_v6 & split2 & $7$ & $0.18$ \\
-2 & mXc\_v5 & split0 & $0.6666$ & $0.25$ \\
-2 & mXc\_v6 & split0 & $0.6500$ & $0.22$ \\
-2 & mXc\_v5 & split2 & $0.5833$ & $0.2$ \\
-2 & mXc\_v6 & split2 & $0.6666$ & $0.22$ \\
-\end{tabular}
-\end{table}
-\end{frame}
-
-\begin{frame}{LL: Latest GPU/Deep Learning libraries matter}
-\begin{itemize}
-  \item From P1 to P2
-  \begin{itemize}
-  \item Upgraded from NVIDIA CUDA 8.0 to CUDA 9.0
-  \end{itemize}
-\end{itemize}
-\end{frame}
-
-\begin{frame}
-\begin{itemize}
- \item Training a Neural Network from scratch needs millions of samples 
- \item In two afternoons I took merely 1434 pictures
- \item \textbf{solution}: stand on the shoulders of giants $\rightarrow$ \textbf{transfer learning}
-\end{itemize}
-\end{frame}
-
-\begin{frame}{Neural Network structure (simplified)}
+\begin{frame}{Convolutional Neural Network structure (simplified)}
 \begin{figure}
 \def\layersep{2.5cm}
-
 \begin{tikzpicture}[shorten >=1pt,->,draw=black!50, node distance=\layersep]
     \tikzstyle{every pin edge}=[-,shorten <=1pt]
     \tikzstyle{neuron}=[circle,fill=black!25,minimum size=17pt,inner sep=0pt]
@@ -345,15 +248,79 @@ Period & Experiment ID & CV-split & \mlcell{Approximate \\ Training \\ Hours} & 
 
     % Annotate the layers
     \node[annot,above of=H-1, node distance=1cm] (hl) {Hidden layer\textbf{s}};
-    \node[annot,left of=hl] {Input layer}; % 299x299 RGB image
+    \node[annot,left of=hl] (il) {Input layer} ; % 299x299 RGB image
     \node[annot,right of=hl] {Output layer};
     \node[annot,below of=I-2] {$\vdots$};
     \node[annot,below left of=I-3] {$\vdots$};
+    \node[annot,left of=il] {\includegraphics[width=1.7\textwidth]{1rgb.png}};
 \end{tikzpicture} 
 \end{figure}
 \end{frame}
 
-\begin{frame}{Data augmentation 1, 2.0, 2.1}
+\section{Approach \& Lessons Learned}
+\begin{frame}
+\begin{center}
+\begin{figure}
+\begin{tikzpicture}
+  [
+    chronos={%
+      width=120mm,
+      height=10pt,
+      start date=2017-01-01,
+      %start date=2017-08-01,
+      end date=2019-01-20,
+      %end date=2018-12-31,
+      period/.style={draw=green},
+      event line/.append style={draw=blue},
+      period event line/.append style={draw=green},
+      event/.append style={fill=blue!25, draw=blue, text=blue},
+      period event/.append style={fill=green!25, draw=green!75!black, text=green!75!black},
+    }
+  ]
+  \chronosperiod [draw=red] {2017-09-04} [draw=red] {2017-11-20} [fill=red!25, draw=red, text=red] {Period P1: \\ Data acquisition, first models, \\ 80\% accuracy} (70pt+.5*\chronosheight)
+  \chronosevent [] {2017-09-04} [] {Acquire first batch of images} (-50pt-.5*\chronosheight)
+  \chronosevent [] {2017-09-13} [] {Cropping first batch of Images} (-90pt-.5*\chronosheight)
+  \chronosevent [] {2017-08-13} [] {Initial discussion with Jelle} (110pt -.5*\chronosheight)
+  \chronosperiod [] {2017-11-21} [] {2018-09-22} [] { Moving, KUL courses, \\ Restart work @ NVISO, Summertime} (-7pt-.5*\chronosheight)
+  \chronosperiod [draw=red] {2018-09-23} [draw=red] {2018-11-19} [fill=red!25, draw=red, text=red] {Period P2: \\ Reinstall, Refining, Reporting, \\ 90\% accuracy} (60pt+.5*\chronosheight)
+  
+\end{tikzpicture}
+\end{figure}
+\end{center}
+\end{frame}
+
+
+\begin{frame}
+\begin{itemize}
+ \item Training an image classification Neural Network from scratch needs \textbf{millions} of samples and days to weeks of computation time 
+ \item In two afternoons I took merely 1434 pictures.
+ \item \textbf{solution}: stand on the shoulders of giants $\rightarrow$ \textbf{transfer learning}
+  \begin{itemize}
+    \item Start from Google-trained InceptionV3 \& Xception Neural Networks
+    \item NN weights trained for \includegraphics[width=0.3\textwidth]{imagenet.jpg}-1000 project: millions of tagged images.
+    \item These networks can categorize 1000 common items very well (80\% accurate)
+    \item Fine-tune Neural Network on this specific data set starting with the basemodel weights.
+  \end{itemize}
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Image Augmentation}
+\begin{itemize}
+  \item Still 1434 pictures is a small dataset for transfer learning with CNNs. 
+  \item \textbf{solution:} Image Augmentation - Random modifications of the dataset
+  \begin{itemize}
+	\item Zoom in
+	\item Flip image horizontally 
+	\item Flip image vertically 
+	\item shift image along x axis
+	\item shift image along y axis
+	\item rotate image 
+	\item Make red, green or blue channel shifts
+  \end{itemize}
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Image augmentation 1, 2.0, 2.1}
 \begin{figure}
 %remove subfigure captions and additional whitespace
 \captionsetup[subfigure]{labelformat=empty,farskip=0pt,nearskip=0pt,captionskip=0pt}
@@ -380,7 +347,7 @@ Period & Experiment ID & CV-split & \mlcell{Approximate \\ Training \\ Hours} & 
 \end{figure}
 \end{frame}
 
-\begin{frame}{Data augmentation 3, 4.0, 4.1}
+\begin{frame}{Image augmentation 3, 4.0, 4.1}
 \begin{figure}
 %remove subfigure captions and additional whitespace
 \captionsetup[subfigure]{labelformat=empty,farskip=0pt,nearskip=0pt}
@@ -407,30 +374,144 @@ Period & Experiment ID & CV-split & \mlcell{Approximate \\ Training \\ Hours} & 
 \end{figure}
 \end{frame}
 
+\begin{frame}{Training CNNs is a probabilistic process}
+\begin{itemize}
+ \item Training Neural Networks is probilistic process, it contains random variables. 
+ \item Train the same model twice, it will have different results 
+ \item \textbf{How to compare different models?}
+\end{itemize}
+\end{frame}
+
+\begin{frame}{LL:5-fold cross-validation}
+\begin{figure}
+For each model run 5 experiments
+\includegraphics[width=0.8\textwidth]{5foldCV} \\
+And average over the 5 different experiments. 
+%And reference it from researchgate.net
+\end{figure}
+\end{frame}
+
+\begin{frame}{Hardware \& Software Stack}
+\begin{table}
+\begin{tabular}{r|cc}
+& Period 1 & Period 2 \\ \hline
+Keras &  2.0.6 & \textbf{2.2.2} \\
+Tensorflow & 1.3.0 & \textbf{1.13.0} \\
+Python & 3.6 & 3.6 \\
+cuDNN & 5.1 & \textbf{7.0} \\ 
+CUDA & 8.0 & \textbf{9.0} \\
+Ubuntu & 16.04.3 LTS & \textbf{fresh 16.04.3 LTS} \\
+Storage & Seagate 3TB-7600RPM & \textbf{Samsung 265GB SSD} \\
+NVIDIA GPU & \multicolumn{2}{c}{GTX 1060 6GB} \\
+Intel CPU &  \multicolumn{2}{c}{Core i5-3570K CPU \@ 3.40GHz} \\
+RAM & \multicolumn{2}{c}{16 GB} \\
+\end{tabular}
+\caption{In P1 trained with testfiles on HDD, later in P2 reinstalled full software stack, with updated libraries, on new SSD}
+\end{table}
+\end{frame}
+
+\begin{frame}{LL: Disk speed/Library version matters}
+\begin{table}
+\caption{Rough estimate: Factor 10 training speed improvement in Period 2}
+\begin{tabular}{ccccc}
+Period & Experiment ID & CV-split & \mlcell{Approximate \\ Training \\ Hours} & Best Validation Loss \\ \hline
+1 & mXc\_v5 & split0 & $7$ & $0.17$ \\
+1 & mXc\_v6 & split0 & $7$ & $0.2$ \\
+1 & mXc\_v5 & split2 & $7$ & $0.16$ \\
+1 & mXc\_v6 & split2 & $7$ & $0.18$ \\
+2 & mXc\_v5 & split0 & $0.6666$ & $0.25$ \\
+2 & mXc\_v6 & split0 & $0.6500$ & $0.22$ \\
+2 & mXc\_v5 & split2 & $0.5833$ & $0.2$ \\
+2 & mXc\_v6 & split2 & $0.6666$ & $0.22$ \\
+\end{tabular}
+\end{table}
+\end{frame}
+
+
+\begin{frame}{LL: Signal/Noise matters}
+\begin{itemize}
+ \item If $\frac{signal}{noise}$ of image is too large, CNN have hard time picking up on the signal.
+ \item I learned it the hard way:
+\begin{itemize}
+ \item First trained model with 675 uncropped rectangular images. \\ $\Rightarrow$ Poor training results.
+ \item After 1,5h of cropping 675 images and retraining the network using Cropall tool %TODO:add ref
+  \\ $\Rightarrow$ Better results ~80\% accuracy?
+\end{itemize}
+\end{itemize}
+
+\end{frame}
+\begin{frame}{LL: uncropped vs cropped}
+\begin{tabular}{cc}
+uncropped & cropped \\
+\includegraphics[width=0.4\textwidth]{2_1uncrop.jpg} 
+& \raisebox{0.5\height}{\includegraphics[width=0.4\textwidth]{2_1crop.jpg}} \\
+\end{tabular}
+
+\end{frame}
+
+
+
+
 \section{Results}
+\begin{frame}
+\begin{tabular}{cc}
+\mlcell{Validation \\ Loss} &
+\raisebox{-0.5\height}{
+\includegraphics[width=0.9\textwidth]{boxplots.png}
+}\\
+& basemodel: IV3\_ = InceptionV3, XC\_ = Xception \\
+\end{tabular}
+\end{frame}
+
+\begin{frame}{Best Model}
+\begin{itemize}
+ \item Best model is Xc\_v7
+  \begin{itemize}
+    \item Has Xception with ImageNet weights as basemodel.
+    \item Fully-connected penultimate layer of 256 neurons.
+    \item Was trained with Stochastic Gradient Descent first 
+    \item And the Adam optimizer secondly 
+  \end{itemize}
+ \item Has average validation loss of $0.1011802$ \\ $\Rightarrow$ validation accuracy of $ 1 - 0.1011802 = 0.8988198 \approx 90\%$
+\end{itemize}
+\end{frame}
+
 \section{Future Work}
 \begin{frame}{Advice}
 \begin{itemize}
   \item Create Image Capture Pipeline
-  \item Multiple-camera's $\rightarrow$ vote per camera's == ensemble model
-  \item Deploy current best model and monitor wether performance degrades
-  \item As soon as enough new samples 
+  \item Multiple-camera's $\rightarrow$ vote per camera
+  \item Deploy current best model and monitor whether performance degrades
 \end{itemize}
 \end{frame}{}
 \begin{frame}{Technical}
 \begin{itemize}
  \item Multi-cameras will give more reliable detection.
- \item Depth sensor (e.g. Microsoft Kinect sensor) will improve accuracy 
   \begin{itemize}
-  \item Transfer learning not possible
-  \item 
+  \item Upside: Will likely improve accuracy, more camera's == more data
+  \item Downside: Processing multiple images fast enough might be a challenge 
+  \end{itemize}
+ \item Adding depth sensor (e.g. Microsoft Kinect sensor) will likely improve accuracy 
+  \begin{itemize}
+  \item Upside: Will likely improve accuracy 
+  \item Downside: transfer learning not yet possible, long training times
   \end{itemize}
  \item Exploring 3D renderings of the CAD files could help recognition.
+    \begin{itemize}
+      \item Even low fidelity renderings have shown to help train Neural Networks
+      \item Upside: CAD files of all items exist already.
+      \item Downside: Rendering also costs computation time. 
+    \end{itemize}
+ \item Generate more data synthetically using Generative Adverserial Neural Networks
+    \begin{itemize}
+      \item Advanced form  of image augmentation 
+      \item Upside: Could significantly improve robustness and accuracy 
+      \item Downside: Technically challenging, high computation time cost 
+    \end{itemize}
 \end{itemize}
 \end{frame}
 
-\begin{frame}{Project}
-\begin{itemize}
+\begin{frame}{Project} \begin{itemize}
  \item Consider collaboration with University.
  \item Master Artificial Inteligence is booming
   \begin{itemize}
@@ -443,7 +524,7 @@ Period & Experiment ID & CV-split & \mlcell{Approximate \\ Training \\ Hours} & 
   \item Transfer learning not possible
   \item 
   \end{itemize}
- \item Exploring 3D renderings of the CAD files could help recognition.
+ \item Using renderings of the CAD files could help in generalisation.
 \end{itemize}
 \end{frame}
 
@@ -451,7 +532,7 @@ Period & Experiment ID & CV-split & \mlcell{Approximate \\ Training \\ Hours} & 
 \begin{frame}
   \begin{itemize}
 	    \item How does the system compare to human classification?
-	    \item Speed (vs 24/7), cost (long-term cost hard to estimate), effort, \emph{accuracy}, FP vs FN
+	    \item Speed (vs 24/7), cost (long-term cost hard to estimate, software and model maintenance), effort, \emph{accuracy}, FP vs FN
 	    \item TEST
   \end{itemize}
 \end{frame}
