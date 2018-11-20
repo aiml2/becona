@@ -174,15 +174,16 @@
 \end{frame}
 
 \section{Problem Definition}
+\subsection{Classification problem @ Becona}
 \begin{frame}{Problem Definition}
   \begin{itemize}
 	    \item Automated Sorting of Concrete Casting Equipment 
 	    \begin{itemize}
 	      \item Exploratory Proof of Concept 
 	      \item Focused on Object Recognition Software System
-	      \item Educational project for myself 
+	      \item Educational Machine Learning project for myself 
 	    \end{itemize}
-	    \item Best image classification systems currently use Convolutional Neural Networks.
+	    \item Best image classification systems currently use machine learning, more specifically Convolutional Neural Networks.
 	    \item \textbf{Are Convolutional Neural Networks (CNNs) a valid approach for classifying the Becona rental items?}
   \end{itemize}
 \end{frame}
@@ -209,6 +210,35 @@
 	\end{figure}
 	%Talk about high similarity of 2.X and 4.X
 \end{frame}
+
+\subsection{Machine Learning}
+\begin{frame}
+{\Large Machine learning}
+\begin{itemize}
+ \item Can solve problems programmers can't program \\ (too complex, too much data, too little time). 
+ \item Combine data and algorithms to teach the machine to solve the problem.
+ \item Goal is predictive power = Generalisation = Learning
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+ {\large Machine learning solution consists of three major components}
+\begin{description}
+ \item[\textbf{Representation}] How to represent the model: what input, what output, model structure, what modelling language,...
+ \item[Evaluation] A function is needed to evaluate and compare models. 
+ \item[Optimization] How to search for the best scoring model?
+\end{description}
+\end{frame}
+
+
+\begin{frame}{Representation}
+\begin{itemize}
+ \item Supervised machine learning
+ \item Convolutional Neural Networks
+ \item RGB image as input. 
+\end{itemize}
+\end{frame}
+
 
 \begin{frame}{Convolutional Neural Network structure (simplified)}
 \begin{figure}
@@ -257,7 +287,9 @@
 \end{figure}
 \end{frame}
 
+
 \section{Approach \& Lessons Learned}
+\subsection{Timeline}
 \begin{frame}
 \begin{center}
 \begin{figure}
@@ -278,8 +310,8 @@
     }
   ]
   \chronosperiod [draw=red] {2017-09-04} [draw=red] {2017-11-20} [fill=red!25, draw=red, text=red] {Period P1: \\ Data acquisition, first models, \\ 80\% accuracy} (70pt+.5*\chronosheight)
-  \chronosevent [] {2017-09-04} [] {Acquire first batch of images} (-50pt-.5*\chronosheight)
-  \chronosevent [] {2017-09-13} [] {Cropping first batch of Images} (-90pt-.5*\chronosheight)
+  \chronosevent [] {2017-09-04} [] {Acquire first batch of images (1,2.0,2.1)} (-50pt-.5*\chronosheight)
+  \chronosevent [] {2017-09-25} [] {Acquire second batch of Images (3,4.0,4.1)} (-90pt-.5*\chronosheight)
   \chronosevent [] {2017-08-13} [] {Initial discussion with Jelle} (110pt -.5*\chronosheight)
   \chronosperiod [] {2017-11-21} [] {2018-09-22} [] { Moving, KUL courses, \\ Restart work @ NVISO, Summertime} (-7pt-.5*\chronosheight)
   \chronosperiod [draw=red] {2018-09-23} [draw=red] {2018-11-19} [fill=red!25, draw=red, text=red] {Period P2: \\ Reinstall, Refining, Reporting, \\ 90\% accuracy} (60pt+.5*\chronosheight)
@@ -290,6 +322,7 @@
 \end{frame}
 
 
+\subsection{Small Data Set}
 \begin{frame}
 \begin{itemize}
  \item Training an image classification Neural Network from scratch needs \textbf{millions} of images and days to weeks of computation time 
@@ -374,13 +407,23 @@
 \end{figure}
 \end{frame}
 
+\subsection{Probabilistic Process}
 \begin{frame}{Training CNNs is a probabilistic process}
 \begin{itemize}
- \item Training Neural Networks is probilistic process, it contains random variables. 
+ \item Training Neural Networks is probilistic (stochastic) process, it contains random variables. 
  \item Train the same model twice, it will have different results 
  \item \textbf{How to compare different models?}
 \end{itemize}
 \end{frame}
+
+\begin{frame}{3 Machine Learning Components}
+\begin{description}
+ \item[Representation] Supervised machine learning, Convolutional Neural Networks, RGB image as input. 
+ \item[Evaluation] Categorical Crossentropy, \textbf{5-fold Cross Validation}
+ \item[Optimization] Stochastic Gradient Descent, \textbf{Trial \& Error}/Intuition (aka Student Gradient Descent), RMSprop, Adam,... 
+\end{description}
+\end{frame}
+
 
 \begin{frame}{LL:5-fold cross-validation}
 \begin{figure}
@@ -391,6 +434,7 @@ And average over the 5 different experiments.
 \end{figure}
 \end{frame}
 
+\subsection{Hardware \& Software}
 \begin{frame}{Hardware \& Software Stack}
 \begin{table}
 \begin{tabular}{r|cc}
@@ -427,6 +471,11 @@ Period & Experiment ID & \mlcell{Approximate \\ Training \\ Hours} & \mlcell{Bes
 \end{table}
 \end{frame}
 
+
+\subsection{Signal/Noise}
+\begin{frame}{}
+
+\end{frame}
 
 \begin{frame}{LL: Signal/Noise matters}
 \begin{itemize}
@@ -493,7 +542,10 @@ Models CAN degrade over time and are biased by the dataset they are trained on.
 \section{Future Work}
 \begin{frame}{Advice}
 \begin{itemize}
-  \item Create Image Capture Pipeline
+  \item Create Data (Image,weight,depth,...) Capture Pipeline
+  \begin{itemize}
+  \item Combining more types sensors/data might help.
+  \end{itemize}
   \item For CNNs: more data, better results
   \item Multiple-camera's $\rightarrow$ vote per camera
   \begin{itemize}
@@ -557,5 +609,12 @@ Models CAN degrade over time and are biased by the dataset they are trained on.
   \end{itemize}
 \end{frame}
 
+\begin{frame}{Bibliography}
+\begin{itemize}
+ \item Paper: A Few Useful Things to Know about Machine Learning
+ \item Image from researchgate.net
+\end{itemize}
+
+\end{frame}
 
 \end{document}
