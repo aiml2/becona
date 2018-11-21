@@ -146,7 +146,8 @@
 
 \usetheme{CambridgeUS}
 
-\title{Machine Learning @ Becona}
+\titlegraphic{\includegraphics[width=0.5\textwidth]{becona.png}}
+\title{Machine Learning @ \raisebox{-0.5\height}{\includegraphics[width=0.1\textwidth]{becona.png}}}
 \subtitle{Proof of Concept Image Classification for Concrete Casting Equipment}
 
 \author{Dieter Castel}
@@ -173,19 +174,50 @@
 \tableofcontents
 \end{frame}
 
+\section{Timeline}
+\begin{frame}
+\begin{center}
+\begin{figure}
+\begin{tikzpicture}
+  [
+    chronos={%
+      width=120mm,
+      height=10pt,
+      start date=2017-01-01,
+      %start date=2017-08-01,
+      end date=2019-01-20,
+      %end date=2018-12-31,
+      period/.style={draw=green},
+      event line/.append style={draw=blue},
+      period event line/.append style={draw=green},
+      event/.append style={fill=blue!25, draw=blue, text=blue},
+      period event/.append style={fill=green!25, draw=green!75!black, text=green!75!black},
+    }
+  ]
+  \chronosperiod [draw=red] {2017-09-04} [draw=red] {2017-11-20} [fill=red!25, draw=red, text=red] {Period P1: \\ Data acquisition, first models, \\ 80\% accuracy} (70pt+.5*\chronosheight)
+  \chronosevent [] {2017-09-04} [] {Acquire first batch of images (1,2.0,2.1)} (-50pt-.5*\chronosheight)
+  \chronosevent [] {2017-09-25} [] {Acquire second batch of Images (3,4.0,4.1)} (-90pt-.5*\chronosheight)
+  \chronosevent [] {2017-08-13} [] {Initial discussion with Jelle} (110pt -.5*\chronosheight)
+  \chronosperiod [] {2017-11-21} [] {2018-09-22} [] { Moving, KUL courses, \\ Restart work @ NVISO, Summertime} (-7pt-.5*\chronosheight)
+  \chronosperiod [draw=red] {2018-09-23} [draw=red] {2018-11-19} [fill=red!25, draw=red, text=red] {Period P2: \\ Reinstall, Refining, Reporting, \\ 90\% accuracy} (60pt+.5*\chronosheight)
+  
+\end{tikzpicture}
+\end{figure}
+\end{center}
+\end{frame}
+
 \section{Problem Definition}
 \subsection{Classification problem @ Becona}
 \begin{frame}{Problem Definition}
   \begin{itemize}
-	    \item Automated Sorting of Concrete Casting Equipment 
+	    \item Automated Sorting of Becona Rental Items Equipment 
 	    \begin{itemize}
 	      \item Exploratory Proof of Concept 
 	      \item Focused on Object Recognition Software System
 	      \item Educational Machine Learning project for myself 
 	    \end{itemize}
-	    \item Best image classification systems currently use machine learning, more specifically Convolutional Neural Networks.
-	    \item \textbf{Are Convolutional Neural Networks (CNNs) a valid approach for classifying the Becona rental items?}
   \end{itemize}
+  {\large \textbf{Q:Is machine learning a viable approach to be used as classification component in the automated sorting machine?}}
 \end{frame}
 
 \begin{frame}{Items} 
@@ -221,6 +253,11 @@
 \end{itemize}
 \end{frame}
 
+%TODO:??
+%\begin{center}
+% \includegraphics[width=0.5\textwidth]{ml.png}
+%\end{center}
+
 \begin{frame}
  {\large Machine learning solution consists of three major components}
 \begin{description}
@@ -232,11 +269,36 @@
 
 
 \begin{frame}{Representation}
+First considered classification of objects by weight:
 \begin{itemize}
- \item Supervised machine learning
- \item Convolutional Neural Networks
- \item RGB image as input. 
+ \item Upside: Much Simpler model: Linear or SVM classifier
+ \item Downside: \textbf{Overlapping weights}: 0,6kg, 5,3kg, 0,16kg, 6,2kg for several objects \\
+  AND likely influence on weight of:
+  \begin{itemize}
+    \item Concrete Remains
+    \item Wear
+    \item make variability
+    \item ...
+  \end{itemize}
 \end{itemize}
+\end{frame}
+
+\begin{frame}{Representation}
+  \begin{center}
+  Not all items can be classified by weight... \\
+  \includegraphics[width=0.3\textwidth]{nope.png}
+  \end{center}
+\end{frame}
+
+\begin{frame}{Representation}
+Image classification seemed good (and interesting) candidate: \\
+Best image classification systems currently use machine learning, more specifically:
+\begin{itemize}
+  \item Supervised machine learning (labeled data).
+  \item Convolutional Neural Networks (CNNs).
+  \item Color(RGB) Image as input.
+\end{itemize}
+{\large \textbf{Q: Are CNNs a viable solution for Becona rental items classification?}}
 \end{frame}
 
 
@@ -289,37 +351,6 @@
 
 
 \section{Approach \& Lessons Learned}
-\subsection{Timeline}
-\begin{frame}
-\begin{center}
-\begin{figure}
-\begin{tikzpicture}
-  [
-    chronos={%
-      width=120mm,
-      height=10pt,
-      start date=2017-01-01,
-      %start date=2017-08-01,
-      end date=2019-01-20,
-      %end date=2018-12-31,
-      period/.style={draw=green},
-      event line/.append style={draw=blue},
-      period event line/.append style={draw=green},
-      event/.append style={fill=blue!25, draw=blue, text=blue},
-      period event/.append style={fill=green!25, draw=green!75!black, text=green!75!black},
-    }
-  ]
-  \chronosperiod [draw=red] {2017-09-04} [draw=red] {2017-11-20} [fill=red!25, draw=red, text=red] {Period P1: \\ Data acquisition, first models, \\ 80\% accuracy} (70pt+.5*\chronosheight)
-  \chronosevent [] {2017-09-04} [] {Acquire first batch of images (1,2.0,2.1)} (-50pt-.5*\chronosheight)
-  \chronosevent [] {2017-09-25} [] {Acquire second batch of Images (3,4.0,4.1)} (-90pt-.5*\chronosheight)
-  \chronosevent [] {2017-08-13} [] {Initial discussion with Jelle} (110pt -.5*\chronosheight)
-  \chronosperiod [] {2017-11-21} [] {2018-09-22} [] { Moving, KUL courses, \\ Restart work @ NVISO, Summertime} (-7pt-.5*\chronosheight)
-  \chronosperiod [draw=red] {2018-09-23} [draw=red] {2018-11-19} [fill=red!25, draw=red, text=red] {Period P2: \\ Reinstall, Refining, Reporting, \\ 90\% accuracy} (60pt+.5*\chronosheight)
-  
-\end{tikzpicture}
-\end{figure}
-\end{center}
-\end{frame}
 
 
 \subsection{Small Data Set}
@@ -471,12 +502,6 @@ Period & Experiment ID & \mlcell{Approximate \\ Training \\ Hours} & \mlcell{Bes
 \end{table}
 \end{frame}
 
-
-\subsection{Signal/Noise}
-\begin{frame}{}
-
-\end{frame}
-
 \begin{frame}{LL: Signal/Noise matters}
 \begin{itemize}
  \item If $\frac{signal}{noise}$ of image is too large, CNN have hard time picking up on the signal.
@@ -489,9 +514,9 @@ Period & Experiment ID & \mlcell{Approximate \\ Training \\ Hours} & \mlcell{Bes
 \end{itemize}
 \end{frame}
 
-\begin{frame}{LL: uncropped vs cropped}
+\begin{frame}{LL: Signal/Noise matters}
 \begin{tabular}{cc}
-uncropped & cropped \\
+{\large uncropped} & {\large cropped} \\
 \includegraphics[width=0.4\textwidth]{2_1uncrop.jpg} 
 & \raisebox{0.5\height}{\includegraphics[width=0.4\textwidth]{2_1crop.jpg}} \\
 \end{tabular}
@@ -531,20 +556,22 @@ uncropped & cropped \\
   \end{itemize}
  \item Has average validation loss of $0.1011802$ \\ $\Rightarrow$ validation accuracy of $ 1 - 0.1011802 = 0.8988198 \approx 90\%$
 \end{itemize}
+{\large \textbf{Q: Are CNNs a viable solution for Becona rental items classification?}}
+{\huge YES... but}
 \end{frame}
 
-\begin{frame}{Caveat}
+\begin{frame}{Caveat of this Proof of Concept}
 Note that while 90\% accuracy seems impressive this is still a very limited dataset.
 There is no guarantee that the model will perform as well with images taken today.
 Models CAN degrade over time and are biased by the dataset they are trained on.
 \end{frame}
 
-\section{Future Work}
+\section{Looking Forward}
 \begin{frame}{Advice}
 \begin{itemize}
-  \item Create Data (Image,weight,depth,...) Capture Pipeline
+  \item Create Data (\textbf{Image},\textbf{weight},...) Capture Pipeline
   \begin{itemize}
-  \item Combining more types sensors/data might help.
+  \item Combining sensors will often help (= Ensemble Model).
   \end{itemize}
   \item For CNNs: more data, better results
   \item Multiple-camera's $\rightarrow$ vote per camera
@@ -552,21 +579,32 @@ Models CAN degrade over time and are biased by the dataset they are trained on.
   \item Upside: Will likely improve accuracy, more camera's == more data
   \item Downside: Processing multiple images fast enough might be a challenge 
   \end{itemize}
-  \item Deploy current best model and monitor whether performance degrades?
+  \item Deploy current best model(s) and monitor real world test performance on a larger dataset. 
 \end{itemize}
-\end{frame}{}
+\end{frame}
 
-\begin{frame}{CNN Technical}
-\begin{itemize}
- \item Multiple-cameras will give more reliable detection.
+\begin{frame}{Costs and tradeoffs to consider vs human classification}
   \begin{itemize}
-  \item Upside: Will likely improve accuracy, more camera's == more data
-  \item Downside: Processing multiple images fast enough might be a challenge 
+      \item Financial cost 
+      \item Sorting Speed (vs 24/7)
+      \item IT setup cost
+      \item Long-term cost hard to estimate
+      \begin{itemize}
+	\item Software and model maintenance
+	\item Model degradation? 
+      \end{itemize}
+      \item Possible Brain drain cost 
+      \item Physical effort
+      \item Classification accuracy
   \end{itemize}
- \item Adding depth sensor (e.g. Microsoft Kinect sensor) will likely improve accuracy 
+\end{frame}
+
+\begin{frame}{CNN Intresting topics for future research}
+\begin{itemize}
+ \item Adding different sensors (Depth sensor, Non-visible spectra) will likely improve accuracy 
   \begin{itemize}
   \item Upside: Will likely improve accuracy 
-  \item Downside: transfer learning not yet possible, long training times, $\frac{signal}{noise}?$
+  \item Downside: Transfer learning not yet possible, long training times, $\frac{signal}{noise}?$
   \end{itemize}
  \item Exploring 3D renderings of the CAD files could help recognition.
     \begin{itemize}
@@ -580,38 +618,38 @@ Models CAN degrade over time and are biased by the dataset they are trained on.
       \item Upside: Could significantly improve robustness and accuracy 
       \item Downside: Technically challenging, high computation time cost 
     \end{itemize}
+
 \end{itemize}
 \end{frame}
 
-\begin{frame}{Project} \begin{itemize}
- \item Consider collaboration with University.
- \item Master Artificial Inteligence is booming
+
+\begin{frame}{Possible collaborations} 
+ Consider collaborations. 
   \begin{itemize}
   \item Internship students could help create the machine learning pipeline.
-  \item Partnership with industry is highly encouraged
-  \item  
+  \item University partnerships with industry is highly encouraged (master thesis?)
+  \item Me (I'm looking for a new job): as doctoral student, as consultant (Kunlabora, Flanders make, ...), directly?
   \end{itemize}
- \item Depth sensor (e.g. Microsoft Kinect sensor) will improve accuracy 
-  \begin{itemize}
-  \item Transfer learning not possible
-  \item 
-  \end{itemize}
- \item Using renderings of the CAD files could help in generalisation.
-\end{itemize}
 \end{frame}
 
 \section{Q\&A}
-\begin{frame}
+\begin{frame}{Questions for Becona}
   \begin{itemize}
-	    \item How does the system compare to human classification?
-	    \item Speed (vs 24/7), cost (long-term cost hard to estimate, software and model maintenance), effort, \emph{accuracy}, FP vs FN
-	    \item TEST
+    \item How accurate do the humans sorters sort?
+    \item How much items are there in total? (How much \% did I photograph now?)
+    \item How much items are there per item class? (Knowing class inbalance can help model)
+    \item Can I use this as portfolio for my job search? 
   \end{itemize}
 \end{frame}
 
+
 \begin{frame}{Bibliography}
 \begin{itemize}
+ \item Blogs, The Internet, Keras, Tensorflow docs, Open-source libraries,...
+ \item Rules of Machine Learning: Best Practices for ML Engineering 
  \item Paper: A Few Useful Things to Know about Machine Learning
+ \item Book: Pattern Recognition and Machine Learning - Christopher Bishop
+ \item Book: Deep learning - Ian Goodfellow and Yoshua Bengio and Aaron Courville 
  \item Image from researchgate.net
 \end{itemize}
 

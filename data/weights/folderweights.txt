@@ -1,0 +1,145 @@
+Problematic: concrete remains, wear, make variability, ...
+And overlapping weights: 0,6kg, 5,3kg, 0,16kg, 6,2kg
+
+ID,Name,Kg
+MB_077_003,Kraanhaak Rotondus,9.2 kg
+MB 077 004	Tondeur Rotondus (3,5 kg)
+MB 077 005
+Scharnierstuk Rotondus (15,6 kg)
+	 MB 073 001
+Spanklem (3 kg)
+BK 073 002
+Variabele Spanklem (5,3 kg)
+BK 073 002
+Variabele Spanklem (5,3 kg)
+BK 073 003
+Verlengde Variabele Spanklem (7,1 kg)
+MB 073 004
+Voetklem (2,2 kg)
+MB 073 100
+Klemkop (1,9 kg)
+MB 073 101
+Klemkop Set (3,6 kg)
+MB 073 200
+Klemafstandhouder (2,5 kg)
+MB 073 601
+Klemanker Set L=240 (3,6 kg)
+MB 073 602
+Klemanker L=240 (2,5 kg)
+MB 073 604
+Klemanker L=410 (2,8 kg)
+MB 074 001
+Ankerset (1,6 kg)
+MB 074 002
+Hoekankerset (3 kg)
+MB 074 003
+Instelnaaf (1 kg)
+MB 074 004
+Hamerkopbout (0,6 kg)
+MB 075 001
+Stalen Oplegplaat (0,6 kg)
+MB 075 002
+Drukplaat (1,5 kg)
+MB 075 003
+Verstevigde Drukplaat (1,65 kg)
+MB 075 004
+Blindplaat Klein - 20F (3,3 kg)
+MB 075 005
+Blindplaat Groot - 20F (3,7 kg)
+MB 079 001
+Uniblok (0,4 kg)
+MB 079 002
+Borgklip Dubbel 3.5 mm (<1kg?)
+MB 079 003
+Blokkeerpen ø30-15 L=102 mm (0,16 kg)
+MB 079 004
+Blokkeerpen ø20-12 L=110 mm (0,13 kg)
+MB 079 005
+Blokkeerpen ø25-18 L=107 mm (0,16 kg)
+MB 079 006
+Blokkeerpen ø25-18 L=120 mm (0,18 kg)
+
+
+	 MB 085 511
+L=300 mm - 15F (0,43 kg)
+•	 MB 085 512
+L=470 mm - 15F (0,67 kg)
+•	 MB 085 513
+L=800 mm - 15F (1,14 kg) 
+MB 085 561
+L=800 mm - 20F (2,05 kg)
+MB 085 514
+L=1000 mm - 15F (1,43 kg) 
+•	 MB 085 562
+L=1000 mm - 20F (2,56 kg)
+•	 MB 085 515
+L=1200 mm - 15F (1,72 kg) 
+•	 MB 085 563
+L=1200 mm - 20F (3,07 kg)
+
+MB 085 611
+Vleugelmoer ø70 - 15F (0,5 kg)
+
+
+MB 085 613
+Vleugelmoer met Oplegplaat 120x120 - 15F (1,2 kg)
+
+
+	 MB 085 615
+Zeskantmoer L=50 mm - 15F (0,22 kg)
+•	 MB 085 662
+Zeskantmoer L=70 mm - 20F (0,40 kg)
+
+•	 MB 085 617
+Verbindingsmoer L=105 mm - 15F (0,44 kg)
+•	 MB 085 663
+Verbindingsmoer L=130 mm - 20F (0,74 kg)
+
+•	 MB 085 661
+Vleugelmoer met Oplegplaat ø130 - 20F (1,3 kg)
+
+•	 MB 072 013
+Richtschoorvoet Dubbel Set (3 kg)
+
+
+•	 MB 072 014
+Richtschoorvoet Enkel Set (1,3 kg)
+
+•	 MB 072 015
+Spindel + Moer Links (3,2 kg)
+•	 MB 072 016
+Spindel + Moer Rechts (3,2 kg)
+
+•	 MB 072 017
+Buis L=700 mm (5.9 kg)
+•	 MB 072 018
+Buis L=1585 mm (11.1 kg)
+
+•	 MB 072 020
+Richtschoorvoet Enkel (1,2 kg)
+
+•	 MB 072 019
+Richtschoorvoet Dubbel (2,7 kg)
+
+	 MB 077 010
+Ontkistingsleutel (6,2 kg)
+
+	 MB 071 040
+Constructiebalk L=400 mm (6,2 kg)
+
+MB 071 077
+Constructiebalk L=770 mm (10,1 kg)
+
+•	 MB 077 002
+Kraanhaak (9,3 kg)
+
+•	 MB 071 095
+Constructiebalk L=950 mm (11,9 kg)
+•	 MB 071 146
+Constructiebalk L=1460 mm (17,7 kg)
+
+MB 071 901
+Scharnier-Constructiebalk 950x950 (22,2 kg)
+
+MB 071 902
+Scharnier-Constructiebalk 1500x1500 (38,5 kg)
